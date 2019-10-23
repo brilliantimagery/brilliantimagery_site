@@ -1,10 +1,20 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="{% static 'tinymce/css/prism.css'  %}">
+
     <title>Title</title>
 </head>
 <body>
-
+    {% for post in posts %}
+        <p>{{ post.title }}</p>
+        <p>{{ post.publish_date }}</p>
+        <p>{{ post.content|safe }}</p>
+        <br><br>
+    {% endfor %}
 </body>
+<script src="{% static 'tinymce/js/prism.js' %}"></script>
 </html>
