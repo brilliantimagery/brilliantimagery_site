@@ -7,7 +7,7 @@ from .models import Post
 
 class PostAdmin(admin.ModelAdmin):
     fieldsets = [
-        ('Title/date', {'fields': ['title', 'publish_date']}),
+        ('Title/date', {'fields': ['title', 'publish_date', 'kind']}),
         ('Content', {'fields': ['content']}),
     ]
 

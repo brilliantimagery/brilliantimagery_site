@@ -17,8 +17,10 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
+    # path(r'^$', include('main.urls')),
     path('', include('main.urls')),
     path('admin/', admin.site.urls),
+    path('account/', include('account.urls')),
     path('tinymce/', include('tinymce.urls')),
     path('tutorial/', include('post.urls')),
 ]

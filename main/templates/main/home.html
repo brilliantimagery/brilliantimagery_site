@@ -1,20 +1,20 @@
+{% extends 'main/_sidebar.html' %}
+
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
 
-    <link rel="stylesheet" href="{% static 'tinymce/css/prism.css'  %}">
-
-    <title>Title</title>
-</head>
-<body>
-    {% for post in posts %}
-        <p>{{ post.title }}</p>
-        <p>{{ post.publish_date }}</p>
-        <p>{{ post.content|safe }}</p>
-        <br><br>
-    {% endfor %}
-</body>
-<script src="{% static 'tinymce/js/prism.js' %}"></script>
-</html>
+{% block main_content %}
+{% for post in posts %}
+    <article class="media">
+{#        <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">#}
+        <div class="media-body">
+            <div class="article-metadata">
+{#                <a class="mr-2" href="#">{{ post.author }}</a>#}
+                <a class="mr-2" href="#">{{ post.kind }}</a>
+                <small class="text-muted">{{ post.publish_date|date:"F d, Y" }}</small>
+            </div>
+            <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
+            <p class="article-content">{{ post.content|safe }}</p>
+        </div>
+    </article>
+{% endfor %}
+{% endblock main_content %}
