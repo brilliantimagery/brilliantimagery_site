@@ -9,7 +9,7 @@
         <div class="media-body">
             <div class="article-metadata">
 {#                <a class="mr-2" href="#">{{ post.author }}</a>#}
-                <a class="mr-2" href="#">{{ post.kind }}</a>
+                <a class="mr-2" href="#">{{ post.series.category.category }} - {{ post.series.series }}</a>
                 <small class="text-muted">{{ post.publish_date|date:"F d, Y" }}</small>
             </div>
             <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
