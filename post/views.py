@@ -8,4 +8,4 @@ def detail_view(request):
 
 
 def list_view(request):
-    return render(request, 'main/home.html', {'posts': Post.objects.all()})
+    return render(request, 'main/templates/post/post_list.html', {'posts': Post.objects.all()})

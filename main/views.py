@@ -4,4 +4,4 @@ from post.models import Post
 
 
 def home(request):
-    return render(request, 'main/home.html', {'posts': Post.objects.all()})
+    return render(request, 'post/post_list.html', {'posts': Post.objects.order_by('-publish_date').all()})
