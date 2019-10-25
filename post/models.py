@@ -38,3 +38,10 @@ class Post(models.Model):
 
     def __str__(self):
         return f'{self.title} - {datetime.datetime.strftime(self.publish_date, "%Y-%m-%d")}'
+
+    @property
+    def content_summary(self):
+        splitter = '</p>'
+        if splitter in self.content:
+            return self.content.split(splitter)[0] + splitter
+        return self.content
