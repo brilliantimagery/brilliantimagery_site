@@ -19,5 +19,6 @@ from . import views
 app_name = 'post'
 
 urlpatterns = [
-    path('', views.detail_view, name='post_detail_view'),
+    path('', views.category_view, name='category_view'),
+    path('<slug_series>/', views.series_view, name='series_view')
 ]

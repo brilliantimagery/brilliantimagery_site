@@ -16,12 +16,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from post.models import PostCategory
+
+
 urlpatterns = [
     # path(r'^$', include('main.urls')),
     path('', include('main.urls')),
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
     path('tinymce/', include('tinymce.urls')),
-    path('tutorial/', include('post.urls')),
+    path('<slug_category>/', include('post.urls'))
 ]
 
+# categories = PostCategory.objects.values_list('category', flat=True).all()
+# urlpatterns += [path(f'{c}/', include('post.urls')) for c in categories]
