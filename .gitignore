@@ -106,5 +106,5 @@ venv.bak/
 # project
 config.py
 
-*.png
-*.svg
+/art
+/media
