@@ -5,7 +5,7 @@
 {% block main_content %}
 {% for post in posts %}
     <article class="media content-section">
-{#        <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">#}
+        <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
         <div class="media-body">
             <div class="article-metadata">
 {#                <a class="mr-2" href="#">{{ post.author }}</a>#}
@@ -13,7 +13,7 @@
                 <a class="mr-2" href="{% url 'post:series_view' slug_category=post.series.category.slug slug_series=post.series.slug %}">{{ post.series.series }}</a>
                 <small class="text-muted">{{ post.publish_date|date:"F d, Y" }}</small>
             </div>
-            <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
+            <h2><a class="article-title" href="{% url 'post:detail_view' post.series.category.slug post.series.slug post.slug %}">{{ post.title }}</a></h2>
             <p class="article-content">{{ post.content_summary|safe }}</p>
         </div>
     </article>

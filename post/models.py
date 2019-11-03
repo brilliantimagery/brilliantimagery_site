@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 
@@ -31,6 +32,7 @@ class PostSeries(models.Model):
 
 class Post(models.Model):
     title: str = models.CharField(max_length=200)
+    author = models.ForeignKey(User, default=1, on_delete=models.SET_DEFAULT)
     content: str = models.TextField()
     publish_date: datetime = models.DateTimeField(default=timezone.now, blank=True)
     series = models.ForeignKey(PostSeries, default=1, verbose_name='series', on_delete=models.SET_DEFAULT)

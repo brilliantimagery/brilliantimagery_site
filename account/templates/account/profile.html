@@ -7,12 +7,23 @@
     <div class="content-secton">
         <div class="media">
             <img src="{{ user.profile.image.url }}" alt="User Profile Picture" class="rounded-circle account-img">
-{#            <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">#}
+            {#            <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">#}
             <div class="media-body">
-                <h2 class="account-header">{{ user.username }}</h2>
+                <h2 class="account-heading">{{ user.username }}</h2>
                 <p class="text-secondary">{{ user.email }}</p>
             </div>
         </div>
-        <!-- Form Here -->
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Profile Info</legend>
+                {{ u_form|crispy }}
+                {{ p_form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Update</button>
+            </div>
+        </form>
     </div>
+    <script>document.querySelector(".custom-file-label").className += " mt-5"</script>
 {% endblock main_content %}
