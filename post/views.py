@@ -45,6 +45,7 @@ class PostListView(ListView):
     model = Post
     context_object_name = 'posts'  # get rid of this and change all 'post' references to 'object_list" refs
     ordering = ['-publish_date']
+    paginate_by = 2
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
