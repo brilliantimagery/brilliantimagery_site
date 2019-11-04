@@ -13,21 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 
-from post.models import PostCategory
+from . import views
+from .views import PostCreateView, PostDeleteView, PostDetailView, PostUpdateView, UserPostListView
 
+app_name = 'post-slugged'
 
 urlpatterns = [
-    # path(r'^$', include('main.urls')),
-    path('', include('main.urls')),
-    path('admin/', admin.site.urls),
-    path('account/', include('account.urls')),
-    path('tinymce/', include('tinymce.urls')),
-    path('posts/', include('post.urls')),
-    path('<slug:slug_category>/', include('post.urls_slugged')),
+    path('', views.category_view, name='category-view'),
+    path('<slug:slug_series>/', views.series_view, name='series-view'),
+    path('<slug:slug_series>/<slug:slug_post>/', PostDetailView.as_view(), name='detail-view'),
+    path('<slug:slug_series>/<slug:slug_post>/delete/', PostDeleteView.as_view(), name='delete-view'),
+    path('<slug:slug_series>/<slug:slug_post>/update/', PostUpdateView.as_view(), name='update-view'),
 ]
-
-# categories = PostCategory.objects.values_list('category', flat=True).all()
-# urlpatterns += [path(f'{c}/', include('post.urls')) for c in categories]

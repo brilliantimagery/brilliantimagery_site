@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from .models import Post
@@ -45,7 +46,17 @@ class PostListView(ListView):
     model = Post
     context_object_name = 'posts'  # get rid of this and change all 'post' references to 'object_list" refs
     ordering = ['-publish_date']
-    paginate_by = 2
+    paginate_by = 5
+
+
+class UserPostListView(ListView):
+    model = Post
+    context_object_name = 'posts'
+    paginate_by = 5
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        return Post.objects.filter(author=user).order_by('-publish_date')
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

@@ -50,6 +50,6 @@ class Post(models.Model):
         return self.content
 
     def get_absolute_url(self):
-        return reverse('post:detail-view', kwargs={'slug_category': self.series.category.slug_category,
-                                                   'slug_series': self.series.slug_series,
-                                                   'slug_post': self.slug_post})
+        return reverse('post-slugged:detail-view', kwargs={'slug_category': self.series.category.slug_category,
+                                                        'slug_series': self.series.slug_series,
+                                                        'slug_post': self.slug_post})

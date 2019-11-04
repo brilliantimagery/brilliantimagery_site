@@ -3,37 +3,41 @@
 {% load static %}
 
 {% block main_content %}
-{% for post in posts %}
-    <article class="media content-section">
-        <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
-        <div class="media-body">
-            <div class="article-metadata">
-                <a class="mr-2" href="{% url 'post:category-view' post.series.category.slug_category %}">{{ post.series.category.category }}</a> -
-                <a class="mr-2" href="{% url 'post:series-view' post.series.category.slug_category post.series.slug_series %}">{{ post.series.series }}</a>
-                <small class="text-muted">{{ post.publish_date|date:"F d, Y" }}</small>
+    {% if view.kwargs.username %}
+        <h1 class="mb-3">Posts by {{ view.kwargs.username }} ({{ page_obj.paginator.count }})</h1>
+    {% endif %}
+    {% for post in posts %}
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <a class="mr-2" href="{% url 'post-slugged:category-view' post.series.category.slug_category %}">{{ post.series.category.category }}</a> -
+                    <a class="mr-2" href="{% url 'post-slugged:series-view' post.series.category.slug_category post.series.slug_series %}">{{ post.series.series }}</a>
+                    <a class="mr-2" href="{% url 'post:user-posts' post.author.username %}">{{ post.author }}</a>
+                    <small class="text-muted">{{ post.publish_date|date:"F d, Y" }}</small>
+                </div>
+                <h2><a class="article-title" href="{% url 'post-slugged:detail-view' post.series.category.slug_category post.series.slug_series post.slug_post %}">{{ post.title }}</a></h2>
+                <p class="article-content">{{ post.content_summary|safe }}</p>
             </div>
-            <h2><a class="article-title" href="{% url 'post:detail-view' post.series.category.slug_category post.series.slug_series post.slug_post %}">{{ post.title }}</a></h2>
-            <p class="article-content">{{ post.content_summary|safe }}</p>
-        </div>
-    </article>
-{% endfor %}
-{% if is_paginated %}
-    {% if page_obj.has_previous %}
-        <a class="btn btn-outline-info mb-4" href="?page=1"><<</a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}"><</a>
-    {% endif %}
-
-    {% for num in page_obj.paginator.page_range %}
-        {% if page_obj.number == num %}
-            <a href="?page={{ num }}" class="btn btn-info mb-4">{{ num }}</a>
-        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-            <a href="?page={{ num }}" class="btn btn-outline-info mb-4">{{ num }}</a>
-        {% endif %}
+        </article>
     {% endfor %}
+    {% if is_paginated %}
+        {% if page_obj.has_previous %}
+            <a class="btn btn-outline-info mb-4" href="?page=1"><<</a>
+            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}"><</a>
+        {% endif %}
 
-    {% if page_obj.has_next %}
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">></a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">>></a>
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <a href="?page={{ num }}" class="btn btn-info mb-4">{{ num }}</a>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a href="?page={{ num }}" class="btn btn-outline-info mb-4">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">></a>
+            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">>></a>
+        {% endif %}
     {% endif %}
-{% endif %}
 {% endblock main_content %}
