@@ -12,7 +12,7 @@
                 <a class="mr-2" href="{% url 'post:series-view' post.series.category.slug_category post.series.slug_series %}">{{ post.series.series }}</a>
                 <small class="text-muted">{{ post.publish_date|date:"F d, Y" }}</small>
             </div>
-            <h2><a class="article-title" href="{% url 'post:detail-view' post.series.category.slug_category post.series.slug_series post.slug %}">{{ post.title }}</a></h2>
+            <h2><a class="article-title" href="{% url 'post:detail-view' post.series.category.slug_category post.series.slug_series post.slug_post %}">{{ post.title }}</a></h2>
             <p class="article-content">{{ post.content_summary|safe }}</p>
         </div>
     </article>
