@@ -8,12 +8,12 @@ from .models import Post
 
 def series_view(request, slug_category, slug_series):
     posts = Post.objects.filter(series__slug_series=slug_series).order_by('-publish_date').all()
-    return render(request, 'post/post_list.html', {'posts': posts})
+    return render(request, 'post/post_list.html', {'object_list': posts})
 
 
 def category_view(request, slug_category):
     posts = Post.objects.filter(series__category__slug_category=slug_category).order_by('-publish_date').all()
-    return render(request, 'post/post_list.html', {'posts': posts})
+    return render(request, 'post/post_list.html', {'object_list': posts})
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -44,14 +44,12 @@ class PostDetailView(DetailView):
 
 class PostListView(ListView):
     model = Post
-    context_object_name = 'posts'  # get rid of this and change all 'post' references to 'object_list" refs
     ordering = ['-publish_date']
     paginate_by = 5
 
 
 class UserPostListView(ListView):
     model = Post
-    context_object_name = 'posts'
     paginate_by = 5
 
     def get_queryset(self):
