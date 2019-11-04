@@ -21,9 +21,8 @@ from .views import PostCreateView, PostDetailView
 app_name = 'post'
 
 urlpatterns = [
-    path('', views.category_view, name='category_view'),
+    path('', views.category_view, name='category-view'),
     path('new/', PostCreateView.as_view(), name='create_view'),
     path('<slug_series>/', views.series_view, name='series_view'),
-    path('<slug_series>/<slug:slug>/', PostDetailView.as_view(), name='detail_view'),
-
+    path('<slug_series>/<slug_post>/', PostDetailView.as_view(), name='detail_view'),
 ]

@@ -8,7 +8,7 @@ from .models import Post, PostCategory, PostSeries
 class PostAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Title/date', {'fields': ['title', 'publish_date']}),
-        ('URL', {'fields': ['slug']}),
+        ('URL', {'fields': ['slug_post']}),
         ('Series', {'fields': ['series']}),
         ('Content', {'fields': ['content']}),
     ]

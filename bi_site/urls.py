@@ -25,7 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
     path('tinymce/', include('tinymce.urls')),
-    path('post/', include('post.urls')),
+    # path('post/', include('post.urls')),
     path('<slug_category>/', include('post.urls')),
 ]
 

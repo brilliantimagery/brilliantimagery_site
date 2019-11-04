@@ -7,9 +7,8 @@
     <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
     <div class="media-body">
         <div class="article-metadata">
-{#                <a class="mr-2" href="#">{{ post.author }}</a>#}
-            <a class="mr-2" href="{% url 'post:category_view' slug_category=object.series.category.slug %}">{{ object.series.category.category }}</a> -
-            <a class="mr-2" href="{% url 'post:series_view' slug_category=object.series.category.slug slug_series=object.series.slug %}">{{ post.series.series }}</a>
+            <a class="mr-2" href="{% url 'post:category-view' slug_category=object.series.category.slug_category %}">{{ object.series.category.category }}</a> -
+            <a class="mr-2" href="{% url 'post:series_view' slug_series=object.series.slug_series %}">{{ post.series.series }}</a>
             <small class="text-muted">{{ object.publish_date|date:"F d, Y" }}</small>
         </div>
         <h2 class="article-title">{{ object.title }}</h2>

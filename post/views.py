@@ -9,18 +9,18 @@ def detail_view(request):
 
 
 def series_view(request, slug_category, slug_series):
-    posts = Post.objects.filter(series__slug=slug_series).order_by('-publish_date').all()
+    posts = Post.objects.filter(series__slug_series=slug_series).order_by('-publish_date').all()
     return render(request, 'post/post_list.html', {'posts': posts})
 
 
 def category_view(request, slug_category):
-    posts = Post.objects.filter(series__category__slug=slug_category).order_by('-publish_date').all()
+    posts = Post.objects.filter(series__category__slug_category=slug_category).order_by('-publish_date').all()
     return render(request, 'post/post_list.html', {'posts': posts})
 
 
 class PostCreateView(CreateView):
     model = Post
-    fields = ['title', 'content', 'series', 'slug']
+    fields = ['title', 'content', 'series', 'slug_post']
 
     def form_valid(self, form):
         form.instance.author
