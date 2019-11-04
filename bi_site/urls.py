@@ -26,7 +26,7 @@ urlpatterns = [
     path('account/', include('account.urls')),
     path('tinymce/', include('tinymce.urls')),
     # path('post/', include('post.urls')),
-    path('<slug_category>/', include('post.urls')),
+    path('<slug:slug_category>/', include('post.urls')),
 ]
 
 # categories = PostCategory.objects.values_list('category', flat=True).all()

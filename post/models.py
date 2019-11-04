@@ -2,6 +2,7 @@ import datetime
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 
 
@@ -36,7 +37,7 @@ class Post(models.Model):
     content: str = models.TextField()
     publish_date: datetime = models.DateTimeField(default=timezone.now, blank=True)
     series = models.ForeignKey(PostSeries, default=1, verbose_name='series', on_delete=models.SET_DEFAULT)
-    slug_post = models.CharField(max_length=200, default='')
+    slug = models.CharField(max_length=200, default='')
 
     def __str__(self):
         return f'{self.title} - {datetime.datetime.strftime(self.publish_date, "%Y-%m-%d")}'
@@ -47,3 +48,8 @@ class Post(models.Model):
         if splitter in self.content:
             return self.content.split(splitter)[0] + splitter
         return self.content
+
+    def get_absolute_url(self):
+        return reverse('detail-view', kwargs={'slug_category': self.series.category.slug_category,
+                                                   'slug_series': self.series.slug_series,
+                                                   'slug': self.slug})
