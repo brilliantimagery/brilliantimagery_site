@@ -1,0 +1,21 @@
+{% extends 'main/_no_sidebar.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block main_content %}
+    <div class="content-section">
+        <form action="" method="post">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Delete Post</legend>
+                <h2>Are you sure you want to delete post "{{ object.title }}"</h2>
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-danger" type="submit">Yes, Delete</button>
+                <a class="btn btn-secondary" href="{% url 'post:detail-view' object.series.category.slug_category object.series.slug_series object.slug_post %}">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+{% endblock main_content %}
