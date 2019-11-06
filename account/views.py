@@ -30,7 +30,6 @@ def register(request):
 
 
 @login_required
-@login_required
 def profile(request):
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
@@ -52,7 +51,6 @@ def profile(request):
         'p_form': p_form
     }
 
-    return render(request, 'account/profile.html', context)
     return render(request, 'account/profile.html', context)
 
 
@@ -80,3 +78,9 @@ def logout_request(request):
     logout(request)
     messages.info(request, "You have been successfully logged out.")
     return redirect('main:home')
+
+
+def privacy_policy(request):
+    'https://support.pipdig.co/articles/gdpr-for-bloggers/'
+    return render(request,
+                  'account/privacy_policy.html')
