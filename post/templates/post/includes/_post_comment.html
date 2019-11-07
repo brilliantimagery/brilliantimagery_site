@@ -1,0 +1,7 @@
+<div class="comment">
+    <p>{{ comment.publish_date }}</p>
+    <p>{{ comment.content }}</p>
+    {% for comment in comment.comment_comments.all %}
+        {% include 'post/includes/_post_comment.html' %}
+    {% endfor %}
+</div>

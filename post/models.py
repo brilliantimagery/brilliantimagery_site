@@ -32,12 +32,12 @@ class PostSeries(models.Model):
 
 
 class Post(models.Model):
-    title: str = models.CharField(max_length=200)
+    title: str = models.CharField(max_length=200, null=True, blank=True)
     author = models.ForeignKey(User, default=1, on_delete=models.SET_DEFAULT)
     content: str = models.TextField()
     publish_date: datetime = models.DateTimeField(default=timezone.now, blank=True)
     series = models.ForeignKey(PostSeries, default=1, verbose_name='series', on_delete=models.SET_DEFAULT)
-    slug_post = models.CharField(max_length=200, default='', unique=True)
+    slug_post = models.CharField(max_length=200, default='', unique=True, null=True, blank=True)
 
     def __str__(self):
         return f'{self.title} - {datetime.datetime.strftime(self.publish_date, "%Y-%m-%d")}'
@@ -51,5 +51,22 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse('post-slugged:detail-view', kwargs={'slug_category': self.series.category.slug_category,
-                                                        'slug_series': self.series.slug_series,
-                                                        'slug_post': self.slug_post})
+                                                           'slug_series': self.series.slug_series,
+                                                           'slug_post': self.slug_post})
+
+
+class PostComment(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, default=1, null=True, blank=True)
+    content: str = models.TextField(default='')
+    publish_date: datetime = models.DateTimeField(default=timezone.now, blank=True)
+
+    post_comment = models.ForeignKey(Post, on_delete=models.CASCADE, default=1,
+                                     related_name='post_comments', null=True, blank=True)
+    comment_comment = models.ForeignKey('self', on_delete=models.CASCADE, default=1,
+                                        related_name='comment_comments', null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = 'PostComments'
+
+    def __str__(self):
+        return self.content[:100]
