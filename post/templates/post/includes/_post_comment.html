@@ -1,6 +1,10 @@
 <div class="comment">
     <p>{{ comment.publish_date }}</p>
     <p>{{ comment.content }}</p>
+    <div class="collapse">
+        Here's stuff
+    </div>
+    {% include 'post/includes/_comment_form.html' %}
     {% for comment in comment.comment_comments.all %}
         {% include 'post/includes/_post_comment.html' %}
     {% endfor %}

@@ -3,7 +3,22 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
-from .models import Post
+from .models import Post, PostComment
+
+
+def detail_view(request, slug_category, slug_series, slug_post):
+    post = get_object_or_404(Post, slug_post=slug_post)
+    username = request.POST.get('username', '')
+    email = request.POST.get('email', '')
+    comment = request.POST.get('new-comment', '')
+    comment_pk = request.POST.get('comment-pk', '')
+    context = {'post': post,
+               'username': username,
+               'email': email,
+               'new_comment': comment,
+               'comment_id': comment_pk,
+               }
+    return render(request, 'post/post_detail.html', context=context)
 
 
 def series_view(request, slug_category, slug_series):
@@ -36,8 +51,10 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user == post.author
 
 
-class PostDetailView(DetailView):
+class PostDetailView(DetailView, CreateView):
     model = Post
+    fields = ['email', 'comment']
+
     slug_field = 'slug_post'
     slug_url_kwarg = 'slug_post'
 

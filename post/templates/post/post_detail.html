@@ -6,12 +6,12 @@
     <article class="content-section">
         <div class="media-body">
             <div class="media">
-                <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
+                <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
                 <div class="article-metadata">
                     <a class="mr-2" href="{% url 'post-slugged:category-view' post.series.category.slug_category %}">{{ post.series.category.category }}</a> -
                     <a class="mr-2" href="{% url 'post-slugged:series-view' post.series.category.slug_category post.series.slug_series %}">{{ post.series.series }}</a>
-                    <small class="text-muted">{{ object.publish_date|date:"F d, Y" }}</small>
-                    {% if object.author == user %}
+                    <small class="text-muted">{{ post.publish_date|date:"F d, Y" }}</small>
+                    {% if post.author == user %}
                         <div>
                             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-slugged:update' post.series.category.slug_category post.series.slug_series post.slug_post %}">Update</a>
                             <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-slugged:delete' post.series.category.slug_category post.series.slug_series post.slug_post %}">Delete</a>
@@ -20,18 +20,23 @@
                 </div>
             </div>
 
-            <h2 class="article-title">{{ object.title }}</h2>
-            <p class="article-content">{{ object.content|safe }}</p>
+            <h2 class="article-title">{{ post.title }}</h2>
+            <p class="article-content">{{ post.content|safe }}</p>
         </div>
+        {% include 'post/includes/_comment_form.html' %}
         <div>
-            {% for comment in object.post_comments.all %}
+            {% for comment in post.post_comments.all %}
                 {% include 'post/includes/_post_comment.html' %}
             {% endfor %}
         </div>
     </article>
 {#    <div class="content-section">#}
-{#        {% for comment in object.post_comment.all %}#}
+{#        {% for comment in post.post_comment.all %}#}
 {#            <p>{{ comment.content }}</p>#}
 {#        {% endfor %}#}
 {#    </div>#}
 {% endblock main_content %}
+
+{% block additional_js %}
+    <script src="{% static 'main/js/collapsible_comments.js' %}"></script>
+{% endblock additional_js %}
