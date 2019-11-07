@@ -8,6 +8,9 @@ from .models import Post, PostComment
 
 def detail_view(request, slug_category, slug_series, slug_post):
     post = get_object_or_404(Post, slug_post=slug_post)
+    comment = request.POST.get('new-comment', '')
+    comment_pk = request.POST.get('comment-pk', '')
+
     if request.user.is_authenticated:
         username = request.user.username
         email = request.user.email
@@ -15,8 +18,9 @@ def detail_view(request, slug_category, slug_series, slug_post):
         username = request.POST.get('username', '')
         email = request.POST.get('email', '')
 
-    comment = request.POST.get('new-comment', '')
-    comment_pk = request.POST.get('comment-pk', '')
+    if request.method == 'POST':
+        post_pk, comment_pk = comment_pk.split(' ')
+
     context = {'post': post,
                'username': username,
                'email': email,

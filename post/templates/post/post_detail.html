@@ -26,15 +26,12 @@
         {% include 'post/includes/_comment_form.html' %}
         <div>
             {% for comment in post.post_comments.all %}
-                {% include 'post/includes/_post_comment.html' %}
+                {% if not comment.comment_comment %}
+                    {% include 'post/includes/_post_comment.html' %}
+                {% endif %}
             {% endfor %}
         </div>
     </article>
-{#    <div class="content-section">#}
-{#        {% for comment in post.post_comment.all %}#}
-{#            <p>{{ comment.content }}</p>#}
-{#        {% endfor %}#}
-{#    </div>#}
 {% endblock main_content %}
 
 {% block additional_js %}
