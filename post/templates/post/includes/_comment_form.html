@@ -6,4 +6,10 @@
     <input type="text" name="new-comment" value="{{ new_comment }}" placeholder="Comment">
     <input type="hidden" name="comment-pk" value="{{ post.pk }} {{ comment.pk }}">
     <button class="btn btn-danger" type="submit" value="{{ post.pk }} {{ comment.pk }}">Comment!</button>
+    {% if not user.is_authenticated %}
+        <small class="text-muted">
+            If you already have an account, please <a href="{% url 'account:login' %}?next=/{{ post.series.category.slug_category }}/{{ post.series.slug_series }}/{{ post.slug_post }}/">login</a>,
+            If you want a lating identity, please <a href="{% url 'account:register' %}?next=/{{ post.series.category.slug_category }}/{{ post.series.slug_series }}/{{ post.slug_post }}/">register</a>!
+        </small>
+    {% endif %}
 </form>
