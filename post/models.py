@@ -57,16 +57,18 @@ class Post(models.Model):
 
 class PostComment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, default=1, null=True, blank=True)
-    content: str = models.TextField(default='')
+    username = models.CharField(max_length=50, default='', null=True, blank=True)
+    email = models.CharField(max_length=50, default='', null=True, blank=True)
     publish_date: datetime = models.DateTimeField(default=timezone.now, blank=True)
+    comment: str = models.TextField(default='')
 
     post_comment = models.ForeignKey(Post, on_delete=models.CASCADE, default=1,
                                      related_name='post_comments', null=True, blank=True)
-    comment_comment = models.ForeignKey('self', on_delete=models.CASCADE, default=1,
+    comment_comment = models.ForeignKey('self', on_delete=models.CASCADE, default=None,
                                         related_name='comment_comments', null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'PostComments'
 
     def __str__(self):
-        return self.content[:100]
+        return self.comment[:100]
