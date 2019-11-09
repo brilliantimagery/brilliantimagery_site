@@ -1,10 +1,7 @@
 <button type="button" class="collapsible btn btn-outline-secondary btn-sm">Leave a Comment!</button>
 <form action="" method="post" class="content">
     {% csrf_token %}
-{#    <input type="text" name="username" value="{{ username }}" placeholder="Nickname">#}
-{#    <input type="email" name="email" value="{{ email }}" placeholder="Email Address">#}
-{#    <input type="text" name="new-comment" value="{{ new_comment }}" placeholder="Comment">#}
-    {{ form }}
+    {{ form.as_p }}
     <input type="hidden" name="comment-pk" value="{{ post.pk }} {{ comment.pk }}">
     <button class="btn btn-danger" type="submit" value="{{ post.pk }} {{ comment.pk }}">Comment!</button>
     {% if not user.is_authenticated %}

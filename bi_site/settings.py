@@ -30,34 +30,50 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-TINYMCE_DEFAULT_CONFIG = {
-    'height': 360,
-    'width': 1120,
-    'cleanup_on_startup': True,
-    'custom_undo_redo_levels': 20,
-    'selector': 'textarea',
-    'theme': 'modern',
-    'plugins': '''
-            textcolor save link image media preview codesample contextmenu
-            table code lists fullscreen  insertdatetime  nonbreaking
-            contextmenu directionality searchreplace wordcount visualblocks
-            visualchars code fullscreen autolink lists  charmap print  hr
-            anchor pagebreak
-            ''',
-    'toolbar1': '''
-            fullscreen preview bold italic underline | fontselect,
-            fontsizeselect  | forecolor backcolor | alignleft alignright |
-            aligncenter alignjustify | indent outdent | bullist numlist table |
-            | link image media | codesample |
-            ''',
-    'toolbar2': '''
-            visualblocks visualchars |
-            charmap hr pagebreak nonbreaking anchor |  code |
-            ''',
-    'contextmenu': 'formats | link image',
-    'menubar': True,
-    'statusbar': True,
-    }
+# TINYMCE_DEFAULT_CONFIG = {
+#     'height': 360,
+#     'width': 1120,
+#     'cleanup_on_startup': True,
+#     'custom_undo_redo_levels': 20,
+#     'selector': 'textarea',
+#     'theme': 'modern',
+#     'plugins': '''
+#             textcolor save link image media preview codesample contextmenu
+#             table code lists fullscreen  insertdatetime  nonbreaking
+#             contextmenu directionality searchreplace wordcount visualblocks
+#             visualchars code fullscreen autolink lists  charmap print  hr
+#             anchor pagebreak
+#             ''',
+#     'toolbar1': '''
+#             fullscreen preview bold italic underline | fontselect,
+#             fontsizeselect  | forecolor backcolor | alignleft alignright |
+#             aligncenter alignjustify | indent outdent | bullist numlist table |
+#             | link image media | codesample |
+#             ''',
+#     'toolbar2': '''
+#             visualblocks visualchars |
+#             charmap hr pagebreak nonbreaking anchor |  code |
+#             ''',
+#     'contextmenu': 'formats | link image',
+#     'menubar': True,
+#     'statusbar': True,
+#     }
+
+TINYMCE_DEFAULT_CONFIG = {'selector': 'textarea',
+                          'theme': 'modern',
+                          'plugins': 'link image preview codesample contextmenu table code lists',
+                          'toolbar1': 'formatselect | bold italic underline | alignleft aligncenter alignright alignjustify '
+                                      '| bullist numlist | outdent indent | table | link image | codesample | preview code',
+                          'contextmenu': 'formats | link image',
+                          'extended_valid_elements': 'img[class=myclass|!src|border:0|alt|title|width|height|style]',
+                          'invalid_elements': 'strong,b,em,i',
+                          'menubar': False,
+                          'inline': False,
+                          'statusbar': True,
+                          'width': 'auto',
+                          'height': 360,
+                          }
+TINYMCE_JS_URL = '//cdn.tinymce.com/4/tinymce.min.js'
 
 
 # Application definition

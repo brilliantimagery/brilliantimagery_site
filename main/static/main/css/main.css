@@ -105,3 +105,33 @@ a.article-title:hover {
   overflow: hidden;
   background-color: #f1f1f1;
 }
+
+@media (min-width: 800px) {
+    .container{
+        max-width: 800px;
+    }
+}
+
+@media (min-width: 1000px) {
+    .container{
+        max-width: 1000px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .container{
+        max-width: 1200px;
+    }
+}
+
+@media (min-width: 1600px) {
+    .container{
+        max-width: 1400px;
+    }
+}
+
+@media (min-width: 1800px) {
+    .container{
+        max-width: 1600px;
+    }
+}
