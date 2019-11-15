@@ -8,13 +8,13 @@
             <div class="media">
                 <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
                 <div class="article-metadata">
-                    <a class="mr-2" href="{% url 'post-slugged:category-view' post.series.category.slug_category %}">{{ post.series.category.category }}</a> -
-                    <a class="mr-2" href="{% url 'post-slugged:series-view' post.series.category.slug_category post.series.slug_series %}">{{ post.series.series }}</a>
+                    <a class="mr-2" href="{% url 'post-slugged:category-view' post.category.slug_category %}">{{ post.series.category.category }}</a>
+{#                    <a class="mr-2" href="{% url 'post-slugged:series-view' post.series.category.slug_category post.series.slug_series %}">{{ post.series.series }}</a>#}
                     <small class="text-muted">{{ post.publish_date|date:"F d, Y" }}</small>
                     {% if post.author == user %}
                         <div>
-                            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-slugged:update' post.series.category.slug_category post.series.slug_series post.slug_post %}">Update</a>
-                            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-slugged:delete' post.series.category.slug_category post.series.slug_series post.slug_post %}">Delete</a>
+                            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-slugged:update' post.category.slug_category post.publish_date|date:"o-m-d" post.slug_post %}">Update</a>
+                            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-slugged:delete' post.category.slug_category post.publish_date|date:"o-m-d" post.slug_post %}">Delete</a>
                         </div>
                     {% endif %}
                 </div>
@@ -23,7 +23,7 @@
             <h2 class="article-title">{{ post.title }}</h2>
             <p class="article-content">{{ post.content|safe }}</p>
         </div>
-        {% include 'post/includes/_comment_form.html' %}
+{#        {% include 'post/includes/_comment_form.html' %}#}
         <div>
             {% for comment in post.post_comments.all %}
                 {% if not comment.comment_comment %}

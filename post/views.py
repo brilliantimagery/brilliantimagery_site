@@ -44,7 +44,7 @@ from .forms import NewCommentForm
 #     return render(request, 'post/post_detail.html', context=context)
 
 
-def detail_view(request, slug_category, slug_series, slug_post):
+def detail_view(request, slug_category, date_slug, slug_post):
 
     post_comment = PostComment()
     if request.user.is_authenticated:
@@ -141,7 +141,7 @@ class UserPostListView(ListView):
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'content', 'series', 'slug_post']
+    fields = ['title', 'content', 'category', 'slug_post']
 
     slug_field = 'slug_post'
     slug_url_kwarg = 'slug_post'

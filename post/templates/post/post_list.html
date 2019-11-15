@@ -11,12 +11,12 @@
             <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
             <div class="media-body">
                 <div class="article-metadata">
-                    <a class="mr-2" href="{% url 'post-slugged:category-view' object.series.category.slug_category %}">{{ object.series.category.category }}</a> -
-                    <a class="mr-2" href="{% url 'post-slugged:series-view' object.series.category.slug_category object.series.slug_series %}">{{ object.series.series }}</a>
+                    <a class="mr-2" href="{% url 'post-slugged:category-view' object.category.slug_category %}">{{ object.series.category.category }}</a>
+{#                    <a class="mr-2" href="{% url 'post-slugged:series-view' object.series.category.slug_category object.series.slug_series %}">{{ object.series.series }}</a>#}
                     <a class="mr-2" href="{% url 'post:user-posts' object.author.username %}">{{ object.author }}</a>
                     <small class="text-muted">{{ object.publish_date|date:"F d, Y" }}</small>
                 </div>
-                <h2><a class="article-title" href="{% url 'post-slugged:detail-view' object.series.category.slug_category object.series.slug_series object.slug_post %}">{{ object.title }}</a></h2>
+                <h2><a class="article-title" href="{% url 'post-slugged:detail-view' object.category.slug_category object.publish_date|date:"o-m-d" object.slug_post %}">{{ object.title }}</a></h2>
                 <p class="article-content">{{ object.content_summary|safe }}</p>
             </div>
         </article>

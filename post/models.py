@@ -18,17 +18,17 @@ class PostCategory(models.Model):
         return self.category
 
 
-class PostSeries(models.Model):
-    series = models.CharField(max_length=200)
-    category = models.ForeignKey(PostCategory, default=1, verbose_name='category', on_delete=models.SET_DEFAULT)
-    summary = models.CharField(max_length=200)
-    slug_series = models.CharField(max_length=200, default='')
-
-    class Meta:
-        verbose_name_plural = 'PostSeries'
-
-    def __str__(self):
-        return self.series
+# class PostSeries(models.Model):
+#     series = models.CharField(max_length=200)
+#     category = models.ForeignKey(PostCategory, default=1, verbose_name='category', on_delete=models.SET_DEFAULT)
+#     summary = models.CharField(max_length=200)
+#     slug_series = models.CharField(max_length=200, default='')
+#
+#     class Meta:
+#         verbose_name_plural = 'PostSeries'
+#
+#     def __str__(self):
+#         return self.series
 
 
 class Post(models.Model):
@@ -36,7 +36,7 @@ class Post(models.Model):
     author = models.ForeignKey(User, default=1, on_delete=models.SET_DEFAULT)
     content: str = models.TextField()
     publish_date: datetime = models.DateTimeField(default=timezone.now, blank=True)
-    series = models.ForeignKey(PostSeries, default=1, verbose_name='series', on_delete=models.SET_DEFAULT)
+    category = models.ForeignKey(PostCategory, default=1, verbose_name='category', on_delete=models.SET_DEFAULT)
     slug_post = models.CharField(max_length=200, default='', unique=True, null=True, blank=True)
 
     def __str__(self):
@@ -50,8 +50,8 @@ class Post(models.Model):
         return self.content
 
     def get_absolute_url(self):
-        return reverse('post-slugged:detail-view', kwargs={'slug_category': self.series.category.slug_category,
-                                                           'slug_series': self.series.slug_series,
+        return reverse('post-slugged:detail-view', kwargs={'slug_category': self.category.slug_category,
+                                                           'date_slug': self.publish_date.strftime('%Y-%m-%d'),
                                                            'slug_post': self.slug_post})
 
 

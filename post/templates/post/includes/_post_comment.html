@@ -1,7 +1,7 @@
 <div class="comment">
     <p>{{ comment.publish_date }}</p>
     <p>{{ comment.comment|safe }}</p>
-    {% include 'post/includes/_comment_form.html' %}
+{#    {% include 'post/includes/_comment_form.html' %}#}
     {% for comment in comment.comment_comments.all %}
         {% include 'post/includes/_post_comment.html' %}
     {% endfor %}
