@@ -18,19 +18,6 @@ class PostCategory(models.Model):
         return self.category
 
 
-# class PostSeries(models.Model):
-#     series = models.CharField(max_length=200)
-#     category = models.ForeignKey(PostCategory, default=1, verbose_name='category', on_delete=models.SET_DEFAULT)
-#     summary = models.CharField(max_length=200)
-#     slug_series = models.CharField(max_length=200, default='')
-#
-#     class Meta:
-#         verbose_name_plural = 'PostSeries'
-#
-#     def __str__(self):
-#         return self.series
-
-
 class Post(models.Model):
     title: str = models.CharField(max_length=200, null=True, blank=True)
     author = models.ForeignKey(User, default=1, on_delete=models.SET_DEFAULT)

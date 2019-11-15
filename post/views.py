@@ -81,14 +81,20 @@ def detail_view(request, slug_category, date_slug, slug_post):
     post = get_object_or_404(Post, slug_post=slug_post)
 
     context = {'post': post,
-               'form': form,
+               # 'form': form,
                }
     return render(request, 'post/post_detail.html', context=context)
 
 
-def series_view(request, slug_category, slug_series):
-    posts = Post.objects.filter(series__slug_series=slug_series).order_by('-publish_date').all()
-    return render(request, 'post/post_list.html', {'object_list': posts})
+def comment_view(request, slug_category, slug_post):
+    post_id = request.GET.get('post-id')
+    comment_id = request.GET.get('comment-id')
+
+
+
+# def series_view(request, slug_category, slug_series):
+#     posts = Post.objects.filter(series__slug_series=slug_series).order_by('-publish_date').all()
+#     return render(request, 'post/post_list.html', {'object_list': posts})
 
 
 def category_view(request, slug_category):
