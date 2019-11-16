@@ -8,6 +8,9 @@
             <div class="media">
                 <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
                 <div class="article-metadata">
+                    <div>
+                        <a class="mr-2" href="{% url 'post:user-posts' post.author.username %}">{{ post.author }}</a>
+                    </div>
                     <a class="mr-2" href="{% url 'post-slugged:category-view' post.category.slug_category %}">{{ post.category.category }}</a>
                     <small class="text-muted">{{ post.publish_date|date:"F d, Y" }}</small>
                     {% if post.author == user %}

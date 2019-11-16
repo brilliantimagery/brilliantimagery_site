@@ -57,7 +57,7 @@ TINYMCE_DEFAULT_CONFIG = {
     'contextmenu': 'formats | link image',
     'menubar': True,
     'statusbar': True,
-    'invalid_elements': 'strong,b,em,i',
+    'invalid_elements': 'script',
     }
 
 TINYMCE_JS_URL = '//cdn.tinymce.com/4/tinymce.min.js'

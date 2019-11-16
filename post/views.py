@@ -1,5 +1,8 @@
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
@@ -48,7 +51,6 @@ def detail_view(request, slug_category, date_slug, slug_post):
     post = get_object_or_404(Post, slug_post=slug_post)
 
     context = {'post': post,
-               # 'form': {'post_id': 0, 'comment_id': 0},
                }
     return render(request, 'post/post_detail.html', context=context)
 
@@ -73,8 +75,8 @@ def comment_view(request, slug_category, date_slug, slug_post):
         form.post_id = int(post_id)
         form.comment_id = int(comment_id) if comment_id and comment_id != '0' else 0
     else:
-        comment_pk = request.POST.get('comment-pk', '')
-        post_pk, comment_pk = comment_pk.split(' ')
+        # comment_pk = request.POST.get('comment-pk', '')
+        # post_pk, comment_pk = comment_pk.split(' ')
 
         form = NewCommentForm(request.POST)
 
@@ -84,8 +86,8 @@ def comment_view(request, slug_category, date_slug, slug_post):
             post_comment.username = form.cleaned_data.get('username')
             post_comment.email = form.cleaned_data.get('email')
             post_comment.comment = form.cleaned_data.get('comment')
-            post_comment.post_comment_id = int(post_pk)
-            post_comment.comment_comment_id = int(comment_pk) if comment_pk else None
+            post_comment.post_comment_id = int(post_id)
+            post_comment.comment_comment_id = int(comment_id) if comment_id else None
             post_comment.save()
             post_comment.comment = None
 
@@ -93,8 +95,50 @@ def comment_view(request, slug_category, date_slug, slug_post):
                             slug_category=slug_category,
                             date_slug=date_slug,
                             slug_post=slug_post)
+        else:
+            post_comment.comment = request.POST.get('comment', '')
 
         form = NewCommentForm(instance=post_comment)
+
+    post = get_object_or_404(Post, slug_post=slug_post)
+
+    context = {'post': post,
+               'form': form,
+               }
+    return render(request, 'post/post_detail.html', context=context)
+
+#@permission_required
+# @user_passes_test()
+@login_required
+def update_comment_view(request, slug_category, date_slug, slug_post):
+    post_id = int(request.GET.get('post-id'))
+    comment_id = int(request.GET.get('comment-id'))
+    user = request.user
+
+    comment = get_object_or_404(PostComment, post_comment_id=post_id, pk=comment_id)
+    # comment = PostComment.objects.get(pk=comment_id)
+    if comment.author != user:
+        raise PermissionDenied
+
+    if request.method == 'GET':
+        form = NewCommentForm(instance=comment)
+        form.post_id = int(post_id)
+        form.comment_id = int(comment_id)
+    else:
+        form = NewCommentForm(request.POST)
+
+        if form.is_valid():
+            comment.comment = form.cleaned_data.get('comment')
+            comment.save()
+
+            return redirect('post-slugged:detail-view',
+                            slug_category=slug_category,
+                            date_slug=date_slug,
+                            slug_post=slug_post)
+        else:
+            comment.comment = request.POST.get('comment', '')
+
+        form = NewCommentForm(instance=comment)
 
     post = get_object_or_404(Post, slug_post=slug_post)
 

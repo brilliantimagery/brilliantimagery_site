@@ -1,15 +1,18 @@
 <div class="comment">
     <div class="media">
 {#        <img src="{{ user.profile.image.url }}" alt="User Profile Picture" class="rounded-circle account-img">#}
-        <img class="rounded-circle article-img" src="{{ user.profile.image.url }}">
+        <img class="rounded-circle article-img" src="{{ comment.author.profile.image.url }}">
         <div class="media-body">
-            {{ user.username }}
+            {{ comment.author.username }}
             <br>
             {{ comment.publish_date }}
         </div>
     </div>
-    <p>{{ comment.publish_date }}</p>
     <p>{{ comment.comment|safe }}</p>
+    {% if comment.author == user %}
+        <a href="{% url 'post-slugged:update_comment' slug_category=post.category.slug_category date_slug=post.publish_date|date:"o-m-d" slug_post=post.slug_post %}?post-id={{ post.pk }}&comment-id={{ comment.pk }}#comment-form">Edit</a>
+        <br>
+    {% endif %}
     {% if post.comments_enabled and post.category.comments_enabled %}
         {% if not form %}
             <a href="{% url 'post-slugged:comment' slug_category=post.category.slug_category date_slug=post.publish_date|date:"o-m-d" slug_post=post.slug_post %}?post-id={{ post.pk }}&comment-id={{ comment.pk }}#comment-form" class="btn btn-outline-secondary btn-sm">Comment</a>

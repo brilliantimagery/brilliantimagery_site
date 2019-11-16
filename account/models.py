@@ -19,12 +19,3 @@ class Profile(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.image.path)
-        # if img.width > 300 and img.height > 300:
-        #     if img.width > img.height:
-        #         output_size = (int(img.width / img.height * 300), 300)
-        #     elif img.width < img.height:
-        #         output_size = (300, int(img.height / img.width * 300))
-        #     else:
-        #         output_size = (300, 300)
-        #     img.thumbnail(output_size)
-        #     img.save(self.image.path)

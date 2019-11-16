@@ -18,7 +18,13 @@ class PostAdmin(admin.ModelAdmin):
     }
 
 
+class PostCommentAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE()}
+    }
+
+
 admin.site.register(Post, PostAdmin)
 admin.site.register(PostCategory)
-admin.site.register(PostComment)
+admin.site.register(PostComment, PostCommentAdmin)
 
