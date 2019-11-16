@@ -10,6 +10,7 @@ class PostCategory(models.Model):
     category = models.CharField(max_length=200)
     summary = models.CharField(max_length=200)
     slug_category = models.CharField(max_length=200, default=1)
+    comments_enabled = models.BooleanField(default=True)
 
     class Meta:
         verbose_name_plural = 'PostCategories'
@@ -25,6 +26,7 @@ class Post(models.Model):
     publish_date: datetime = models.DateTimeField(default=timezone.now, blank=True)
     category = models.ForeignKey(PostCategory, default=1, verbose_name='category', on_delete=models.SET_DEFAULT)
     slug_post = models.CharField(max_length=200, default='', unique=True, null=True, blank=True)
+    comments_enabled = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.title} - {datetime.datetime.strftime(self.publish_date, "%Y-%m-%d")}'
@@ -48,6 +50,7 @@ class PostComment(models.Model):
     email = models.CharField(max_length=50, default='', null=True, blank=True)
     publish_date: datetime = models.DateTimeField(default=timezone.now, blank=True)
     comment: str = models.TextField(default='')
+    comments_enabled = models.BooleanField(default=True)
 
     post_comment = models.ForeignKey(Post, on_delete=models.CASCADE, default=1,
                                      related_name='post_comments', null=True, blank=True)

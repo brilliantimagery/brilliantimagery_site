@@ -10,9 +10,8 @@ class PostAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Title/date', {'fields': ['title', 'publish_date', 'author']}),
         ('URL', {'fields': ['slug_post']}),
-        # ('Series', {'fields': ['series']}),
         ('Category', {'fields': ['category']}),
-        ('Content', {'fields': ['content']}),
+        ('Content', {'fields': ['content', 'comments_enabled']}),
     ]
 
     formfield_overrides = {
@@ -22,6 +21,5 @@ class PostAdmin(admin.ModelAdmin):
 
 admin.site.register(Post, PostAdmin)
 admin.site.register(PostCategory)
-# admin.site.register(PostSeries)
 admin.site.register(PostComment)
 
