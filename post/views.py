@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from .models import Post, PostComment
@@ -46,6 +46,18 @@ from .forms import NewCommentForm
 
 def detail_view(request, slug_category, date_slug, slug_post):
 
+    post = get_object_or_404(Post, slug_post=slug_post)
+
+    context = {'post': post,
+               # 'form': {'post_id': 0, 'comment_id': 0},
+               }
+    return render(request, 'post/post_detail.html', context=context)
+
+
+def comment_view(request, slug_category, date_slug, slug_post):
+    post_id = request.GET.get('post-id')
+    comment_id = request.GET.get('comment-id')
+
     post_comment = PostComment()
     if request.user.is_authenticated:
         user = request.user
@@ -59,6 +71,8 @@ def detail_view(request, slug_category, date_slug, slug_post):
 
     if request.method == 'GET':
         form = NewCommentForm(instance=post_comment)
+        form.post_id = int(post_id)
+        form.comment_id = int(comment_id) if comment_id and comment_id != '0' else 0
     else:
         comment_pk = request.POST.get('comment-pk', '')
         post_pk, comment_pk = comment_pk.split(' ')
@@ -76,19 +90,23 @@ def detail_view(request, slug_category, date_slug, slug_post):
             post_comment.save()
             post_comment.comment = None
 
+            return redirect('post-slugged:detail-view',
+                            slug_category=slug_category,
+                            date_slug=date_slug,
+                            slug_post=slug_post)
+
         form = NewCommentForm(instance=post_comment)
 
     post = get_object_or_404(Post, slug_post=slug_post)
 
     context = {'post': post,
-               # 'form': form,
+               'form': form,
                }
     return render(request, 'post/post_detail.html', context=context)
 
 
-def comment_view(request, slug_category, slug_post):
-    post_id = request.GET.get('post-id')
-    comment_id = request.GET.get('comment-id')
+    # post_id = request.GET.get('post-id')
+    # comment_id = request.GET.get('comment-id')
 
 
 

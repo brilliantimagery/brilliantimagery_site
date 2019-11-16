@@ -27,5 +27,5 @@ urlpatterns = [
     path('<slug:date_slug>/<slug:slug_post>/', views.detail_view, name='detail-view'),
     path('<slug:date_slug>/<slug:slug_post>/delete/', PostDeleteView.as_view(), name='delete'),
     path('<slug:date_slug>/<slug:slug_post>/update/', PostUpdateView.as_view(), name='update'),
-    path('<slug:date_slug>/<slug:slug_post>/respond/', views.comment_view, name='comment'),
+    path('<slug:date_slug>/<slug:slug_post>/comment/', views.comment_view, name='comment'),
 ]

@@ -8,7 +8,7 @@ from post.models import PostComment
 
 class NewCommentForm(forms.ModelForm):
     # comment = forms.CharField(widget=TinyMCE(mce_attrs={}))
-    comment = forms.CharField(widget=TinyMCE(attrs={'placeholder': 'hello', 'id': 'lkj'}), max_length=10000)
+    comment = forms.CharField(widget=TinyMCE(attrs={'placeholder': 'hello'}), max_length=10000)
 
     class Meta:
         model = PostComment
