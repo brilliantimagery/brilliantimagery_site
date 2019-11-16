@@ -60,20 +60,6 @@ TINYMCE_DEFAULT_CONFIG = {
     'invalid_elements': 'strong,b,em,i',
     }
 
-# TINYMCE_DEFAULT_CONFIG = {'selector': 'textarea',
-#                           'theme': 'modern',
-#                           'plugins': 'link image preview codesample contextmenu table code lists',
-#                           'toolbar1': 'formatselect | bold italic underline | alignleft aligncenter alignright alignjustify '
-#                                       '| bullist numlist | outdent indent | table | link image | codesample | preview code',
-#                           'contextmenu': 'formats | link image',
-#                           'extended_valid_elements': 'img[class=myclass|!src|border:0|alt|title|width|height|style]',
-#                           'invalid_elements': 'strong,b,em,i',
-#                           'menubar': False,
-#                           'inline': False,
-#                           'statusbar': True,
-#                           'width': 'auto',
-#                           'height': 360,
-#                           }
 TINYMCE_JS_URL = '//cdn.tinymce.com/4/tinymce.min.js'
 
 
