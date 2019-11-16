@@ -3,7 +3,6 @@ from django.db import models
 from tinymce.widgets import TinyMCE
 
 from .models import Post, PostComment, PostCategory
-# from .models import Post, PostCategory, PostSeries
 
 
 class PostAdmin(admin.ModelAdmin):

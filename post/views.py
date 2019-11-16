@@ -103,14 +103,6 @@ def comment_view(request, slug_category, date_slug, slug_post):
                }
     return render(request, 'post/post_detail.html', context=context)
 
-    # post_id = request.GET.get('post-id')
-    # comment_id = request.GET.get('comment-id')
-
-
-# def series_view(request, slug_category, slug_series):
-#     posts = Post.objects.filter(series__slug_series=slug_series).order_by('-publish_date').all()
-#     return render(request, 'post/post_list.html', {'object_list': posts})
-
 
 def category_view(request, slug_category):
     posts = Post.objects.filter(category__slug_category=slug_category).order_by('-publish_date').all()
