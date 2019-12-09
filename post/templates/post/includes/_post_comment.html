@@ -9,7 +9,7 @@
         </div>
     </div>
     <p>{{ comment.comment|safe }}</p>
-    {% if comment.author == user %}
+    {% if comment.author == user or perms.account.can_change_post_comment %}
         <a href="{% url 'post-slugged:update_comment' slug_category=post.category.slug_category date_slug=post.publish_date|date:"o-m-d" slug_post=post.slug_post %}?post-id={{ post.pk }}&comment-id={{ comment.pk }}#comment-form">Edit</a>
         <br>
     {% endif %}
