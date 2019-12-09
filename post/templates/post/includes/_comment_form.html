@@ -3,7 +3,8 @@
     {% csrf_token %}
     {{ form.as_p }}
     <input type="hidden" name="comment-pk" value="{{ post.pk }} {{ comment.pk }}">
-    <button class="btn btn-danger" type="submit" value="{{ post.pk }} {{ comment.pk }}">Comment!</button>
+    <a href="{% url 'post-slugged:detail-view' post.category.slug_category post.publish_date|date:"o-m-d" post.slug_post %}" class="btn btn-dark">Cancel</a>
+    <button class="btn btn-danger" type="submit" value="{{ post.pk }} {{ comment.pk }}">{{ button_name }}</button>
     {% if not user.is_authenticated %}
         <small class="text-muted">
             If you already have an account, please <a href="{% url 'account:login' %}?next=/{{ post.series.category.slug_category }}/{{ post.series.slug_series }}/{{ post.slug_post }}/">login</a>,

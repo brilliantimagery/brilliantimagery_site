@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission, Group
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
@@ -49,6 +49,9 @@ from .forms import NewCommentForm
 
 def detail_view(request, slug_category, date_slug, slug_post):
     post = get_object_or_404(Post, slug_post=slug_post)
+
+    # user = request.user
+    # perm_tuple = [(x.id, x.name) for x in Group.objects.filter(user=user)]
 
     context = {'post': post,
                }
@@ -104,6 +107,7 @@ def comment_view(request, slug_category, date_slug, slug_post):
 
     context = {'post': post,
                'form': form,
+               'button_name': 'Comment'
                }
     return render(request, 'post/post_detail.html', context=context)
 
@@ -117,7 +121,7 @@ def update_comment_view(request, slug_category, date_slug, slug_post):
 
     comment = get_object_or_404(PostComment, post_comment_id=post_id, pk=comment_id)
     # comment = PostComment.objects.get(pk=comment_id)
-    if comment.author != user:
+    if comment.author != user and not user.groups.filter(name='editor').exists():
         raise PermissionDenied
 
     if request.method == 'GET':
@@ -144,6 +148,7 @@ def update_comment_view(request, slug_category, date_slug, slug_post):
 
     context = {'post': post,
                'form': form,
+               'button_name': 'Update'
                }
     return render(request, 'post/post_detail.html', context=context)
 
