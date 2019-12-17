@@ -1,3 +1,4 @@
+from django import template
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User, Permission, Group
@@ -50,9 +51,6 @@ from .forms import NewCommentForm
 def detail_view(request, slug_category, date_slug, slug_post):
     post = get_object_or_404(Post, slug_post=slug_post)
 
-    # user = request.user
-    # perm_tuple = [(x.id, x.name) for x in Group.objects.filter(user=user)]
-
     context = {'post': post,
                }
     return render(request, 'post/post_detail.html', context=context)
@@ -78,9 +76,6 @@ def comment_view(request, slug_category, date_slug, slug_post):
         form.post_id = int(post_id)
         form.comment_id = int(comment_id) if comment_id and comment_id != '0' else 0
     else:
-        # comment_pk = request.POST.get('comment-pk', '')
-        # post_pk, comment_pk = comment_pk.split(' ')
-
         form = NewCommentForm(request.POST)
 
         if form.is_valid():
@@ -111,7 +106,8 @@ def comment_view(request, slug_category, date_slug, slug_post):
                }
     return render(request, 'post/post_detail.html', context=context)
 
-#@permission_required
+
+# @permission_required
 # @user_passes_test()
 @login_required
 def update_comment_view(request, slug_category, date_slug, slug_post):
@@ -121,6 +117,10 @@ def update_comment_view(request, slug_category, date_slug, slug_post):
 
     comment = get_object_or_404(PostComment, post_comment_id=post_id, pk=comment_id)
     # comment = PostComment.objects.get(pk=comment_id)
+    groups = user.groups.all()
+    for g in groups:
+        a = g
+
     if comment.author != user and not user.groups.filter(name='editor').exists():
         raise PermissionDenied
 
