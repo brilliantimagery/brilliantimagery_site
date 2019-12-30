@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User, Permission, Group
 from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
@@ -46,7 +47,7 @@ from .forms import NewCommentForm
 #                'comment_id': comment_pk,
 #                }
 #     return render(request, 'post/post_detail.html', context=context)
-
+pagination_count = 10
 
 def detail_view(request, slug_category, date_slug, slug_post):
     post = get_object_or_404(Post, slug_post=slug_post)
@@ -54,6 +55,23 @@ def detail_view(request, slug_category, date_slug, slug_post):
     context = {'post': post,
                }
     return render(request, 'post/post_detail.html', context=context)
+
+
+def home_view(request):
+    # paginate
+    posts = Post.objects.order_by('-publish_date').all()
+
+    paginated_posts = Paginator(posts, pagination_count)
+
+    results_per_subset = 5
+    # all_posts = Post.objects.order_by('-publish_date').values('title', 'category__slug_category', 'publish_date', 'slug_post')[:results_per_subset]
+    all_posts = Post.objects.order_by('-publish_date')[:results_per_subset]
+    tutorials = Post.objects.order_by('-publish_date').filter(category__category__iexact='DNG101')[: 2]
+
+    context = {'object_list': posts,
+               'sidebar': {'All Posts': all_posts, 'Tutorials': tutorials},
+               }
+    return render(request, 'post/post_list.html', context=context)
 
 
 def comment_view(request, slug_category, date_slug, slug_post):
@@ -117,9 +135,9 @@ def update_comment_view(request, slug_category, date_slug, slug_post):
 
     comment = get_object_or_404(PostComment, post_comment_id=post_id, pk=comment_id)
     # comment = PostComment.objects.get(pk=comment_id)
-    groups = user.groups.all()
-    for g in groups:
-        a = g
+    # groups = user.groups.all()
+    # for g in groups:
+    #     a = g
 
     if comment.author != user and not user.groups.filter(name='editor').exists():
         raise PermissionDenied
@@ -160,7 +178,7 @@ def category_view(request, slug_category):
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['title', 'content', 'series', 'slug_post']
+    fields = ['title', 'content', 'category', 'slug_post']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -189,12 +207,12 @@ class PostDetailView(DetailView, CreateView):
 class PostListView(ListView):
     model = Post
     ordering = ['-publish_date']
-    paginate_by = 5
+    pagination_count = 5
 
 
 class UserPostListView(ListView):
     model = Post
-    paginate_by = 5
+    pagination_count = 5
 
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))

@@ -1,4 +1,4 @@
-{% extends 'main/_sidebar.html' %}
+{% extends 'main/_with_sidebar.html' %}
 
 {% load static %}
 
@@ -40,3 +40,20 @@
         {% endif %}
     {% endif %}
 {% endblock main_content %}
+
+{% block sidebar_content %}
+    {#    {{ titles }}#}
+    {#    hello#}
+    <div class="content-section">
+        <h3>More Content</h3>
+{#        <p class='text-muted'>You can put any information here you'd like.</p>#}
+        {% for section, posts in sidebar.items %}
+            <p>{{ section }}</p>
+            <ul class="list-group">
+            {% for post in posts %}
+                <a href="{% url 'post-slugged:detail-view' post.category.slug_category post.publish_date|date:"o-m-d" post.slug_post %}" class="list-group-item list-group-item-light">{{ post.title }}</a>
+            {% endfor %}
+            </ul>
+        {% endfor %}
+    </div>
+{% endblock sidebar_content %}
