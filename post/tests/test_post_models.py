@@ -2,68 +2,69 @@ from mixer.backend.django import mixer
 import pytest
 
 
-@pytest.mark.django_db
-class TestPostModels:
+def test_postcategory_str(db):
+    category = 'Hello!!! Hello again.'
+    post_category = mixer.blend('post.PostCategory', category=category)
 
-    def test_postcategory_str(self):
-        category = 'Hello!!! Hello again.'
-        post_category = mixer.blend('post.PostCategory', category=category)
+    actual = str(post_category)
+    expected = category
 
-        actual = str(post_category)
-        expected = category
+    assert actual == expected
 
-        assert actual == expected
 
-    def test_post_str(self):
-        import datetime
+def test_post_str(db):
+    import datetime
 
-        title = 'Title'
-        publish_date = datetime.datetime(2020, 8, 12)
-        post = mixer.blend('post.Post', title=title, publish_date=publish_date)
+    title = 'Title'
+    publish_date = datetime.datetime(2020, 8, 12)
+    post = mixer.blend('post.Post', title=title, publish_date=publish_date)
 
-        actual = str(post)
-        expected = f'Title - 2020-08-12'
+    actual = str(post)
+    expected = f'Title - 2020-08-12'
 
-        assert actual == expected
+    assert actual == expected
 
-    def test_post_content_summary_with_paragraph_tags(self):
-        content = '<p>Hello!!!</p> <p>Hello again.</p>'
-        post = mixer.blend('post.Post', content=content)
 
-        actual = post.content_summary
-        expected = '<p>Hello!!!</p>'
+def test_post_content_summary_with_paragraph_tags(db):
+    content = '<p>Hello!!!</p> <p>Hello again.</p>'
+    post = mixer.blend('post.Post', content=content)
 
-        assert actual == expected
+    actual = post.content_summary
+    expected = '<p>Hello!!!</p>'
 
-    def test_post_content_summary_without_paragraph_tags(self):
-        content = 'Hello!!! Hello again.'
-        post = mixer.blend('post.Post', content=content)
+    assert actual == expected
 
-        actual = post.content_summary
-        expected = content
 
-        assert actual == expected
+def test_post_content_summary_without_paragraph_tags(db):
+    content = 'Hello!!! Hello again.'
+    post = mixer.blend('post.Post', content=content)
 
-    # def test_post_get_absolute_url(self):
-    #     category = mixer.blend('post.Cat')
-    #     slug_category = 'category'
-    #     date_slug
-    #     post = mixer.blend('post.Post', content=content)
-    #
-    #     actual = post.content_summary
-    #     expected = content
-    #
-    #     assert actual == expected
+    actual = post.content_summary
+    expected = content
 
-    def test_postcomment_str(self):
-        import datetime
+    assert actual == expected
 
-        comment = "Here's a string that's more than one hundred characters long. " \
-                  "It won't really fit on one line so it breaks pep 8 rules."
-        post_comment = mixer.blend('post.PostComment', comment=comment)
 
-        actual = str(post_comment)
-        expected = "Here's a string that's more than one hundred characters long. " \
-                   "It won't really fit on one line so it "
+# def test_post_get_absolute_url(self):
+#     category = mixer.blend('post.Cat')
+#     slug_category = 'category'
+#     date_slug
+#     post = mixer.blend('post.Post', content=content)
+#
+#     actual = post.content_summary
+#     expected = content
+#
+#     assert actual == expected
 
-        assert actual == expected
+def test_postcomment_str(db):
+    import datetime
+
+    comment = "Here's a string that's more than one hundred characters long. " \
+              "It won't really fit on one line so it breaks pep 8 rules."
+    post_comment = mixer.blend('post.PostComment', comment=comment)
+
+    actual = str(post_comment)
+    expected = "Here's a string that's more than one hundred characters long. " \
+               "It won't really fit on one line so it "
+
+    assert actual == expected

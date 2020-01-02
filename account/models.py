@@ -12,6 +12,7 @@ class Profile(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+        print('saving', '*'*50)
 
         img = Image.open(self.image.path)
 
