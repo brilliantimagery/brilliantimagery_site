@@ -23,7 +23,6 @@ def detail_view(request, slug_category, date_slug, slug_post):
 
 
 def home_view(request):
-    # paginate
     posts = Post.objects.order_by('-publish_date').all()
     paginated_posts = Paginator(posts, pagination_count)
     page = request.GET.get('page')
@@ -33,6 +32,26 @@ def home_view(request):
     # all_posts = Post.objects.order_by('-publish_date').values('title', 'category__slug_category', 'publish_date', 'slug_post')[:results_per_subset]
     all_posts = Post.objects.order_by('-publish_date')[:results_per_subset]
     tutorials = Post.objects.order_by('-publish_date').filter(category__category__iexact='DNG101')[: 2]
+
+    context = {'object_list': posts,
+               'sidebar': {'All Posts': all_posts, 'Tutorials': tutorials},
+               }
+    return render(request, 'post/post_list.html', context=context)
+
+
+def user_post_list_view(request, username):
+    # user = get_object_or_404(User, username=self.kwargs.get('username'))
+    user = get_object_or_404(User, username=username)
+    posts = Post.objects.filter(author=user).order_by('-publish_date')
+    paginated_posts = Paginator(posts, pagination_count)
+    page = request.GET.get('page')
+    posts = paginated_posts.get_page(page)
+
+    results_per_subset = 5
+    # all_posts = Post.objects.order_by('-publish_date').values('title', 'category__slug_category', 'publish_date', 'slug_post')[:results_per_subset]
+    all_posts = Post.objects.filter(author=user).order_by('-publish_date')[:results_per_subset]
+    tutorials = Post.objects.filter(author=user). \
+                    order_by('-publish_date').filter(category__category__iexact='DNG101')[: 2]
 
     context = {'object_list': posts,
                'sidebar': {'All Posts': all_posts, 'Tutorials': tutorials},
@@ -162,12 +181,12 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user == post.author
 
 
-class PostDetailView(DetailView, CreateView):
-    model = Post
-    fields = ['email', 'comment']
-
-    slug_field = 'slug_post'
-    slug_url_kwarg = 'slug_post'
+# class PostDetailView(DetailView, CreateView):
+#     model = Post
+#     fields = ['email', 'comment']
+#
+#     slug_field = 'slug_post'
+#     slug_url_kwarg = 'slug_post'
 
 
 class PostListView(ListView):
@@ -176,13 +195,13 @@ class PostListView(ListView):
     pagination_count = 5
 
 
-class UserPostListView(ListView):
-    model = Post
-    pagination_count = 5
-
-    def get_queryset(self):
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
-        return Post.objects.filter(author=user).order_by('-publish_date')
+# class UserPostListView(ListView):
+#     model = Post
+#     pagination_count = 5
+#
+#     def get_queryset(self):
+#         user = get_object_or_404(User, username=self.kwargs.get('username'))
+#         return Post.objects.filter(author=user).order_by('-publish_date')
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

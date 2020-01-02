@@ -4,6 +4,9 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pytest-django = "*"
+pytest-cov = "*"
+mixer = "*"
 
 [packages]
 django = "==2.2.8"

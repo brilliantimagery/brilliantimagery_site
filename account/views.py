@@ -81,6 +81,6 @@ def logout_request(request):
 
 
 def privacy_policy(request):
-    'https://support.pipdig.co/articles/gdpr-for-bloggers/'
+    #  'https://support.pipdig.co/articles/gdpr-for-bloggers/'
     return render(request,
                   'account/privacy_policy.html')

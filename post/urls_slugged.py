@@ -16,7 +16,8 @@ Including another URLconf
 from django.urls import path
 
 from . import views
-from .views import PostCreateView, PostDeleteView, PostDetailView, PostUpdateView, UserPostListView
+# from .views import PostCreateView, PostDeleteView, PostDetailView, PostUpdateView, UserPostListView
+from .views import PostCreateView, PostDeleteView, PostUpdateView
 
 app_name = 'post-slugged'
 
