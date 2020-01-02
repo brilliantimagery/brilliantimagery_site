@@ -30,7 +30,6 @@ def test_post_str(db):
     from django.contrib.auth.models import User
     mixer.blend(User)
     mixer.blend('post.PostCategory')
-    # mixer.blend('post.Post')
     post = mixer.blend('post.Post', title=title, publish_date=publish_date)
 
     actual = str(post)

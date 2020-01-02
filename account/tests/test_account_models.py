@@ -1,5 +1,6 @@
 import os
 
+from django.test import TestCase
 from mixer.backend.django import mixer
 import pytest
 
@@ -66,9 +67,6 @@ def test_user_save(db_w_updated_user):
 
     assert actual_user.username == expected_username
     assert actual_user.email == expected_email
-
-
-from django.test import TestCase
 
 
 class TestProfileSave(TestCase):

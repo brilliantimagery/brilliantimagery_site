@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -14,7 +15,8 @@ def register(request):
             user = form.save()
             username = form.cleaned_data.get('username')
             messages.success(request, f'New account created for: {username}')
-            login(request, user)
+            # login(request, user)
+            auth.login(request, user)
             messages.info(request, f'You are now logged in as: {username}')
             return redirect('main:home')
         else:
