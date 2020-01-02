@@ -9,7 +9,7 @@ pytest-cov = "*"
 mixer = "*"
 
 [packages]
-django = "==2.2.8"
+django = "==3.0.1"
 django-tinymce4-lite = "*"
 django-crispy-forms = "*"
 pillow = "*"
