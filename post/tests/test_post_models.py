@@ -2,6 +2,15 @@ from mixer.backend.django import mixer
 import pytest
 
 
+# @pytest.fixture(scope="module")
+# def initialized_db(db):
+#     from django.contrib.auth.models import User
+#     mixer.blend(User)
+#     mixer.blend('post.PostCategory')
+#     mixer.blend('post.Post')
+#     yield None
+
+
 def test_postcategory_str(db):
     category = 'Hello!!! Hello again.'
     post_category = mixer.blend('post.PostCategory', category=category)
@@ -17,6 +26,11 @@ def test_post_str(db):
 
     title = 'Title'
     publish_date = datetime.datetime(2020, 8, 12)
+
+    from django.contrib.auth.models import User
+    mixer.blend(User)
+    mixer.blend('post.PostCategory')
+    # mixer.blend('post.Post')
     post = mixer.blend('post.Post', title=title, publish_date=publish_date)
 
     actual = str(post)
@@ -26,7 +40,12 @@ def test_post_str(db):
 
 
 def test_post_content_summary_with_paragraph_tags(db):
+    from django.contrib.auth.models import User
+
     content = '<p>Hello!!!</p> <p>Hello again.</p>'
+    mixer.blend(User)
+    mixer.blend('post.PostCategory')
+    # mixer.blend('post.Post')
     post = mixer.blend('post.Post', content=content)
 
     actual = post.content_summary
@@ -37,6 +56,9 @@ def test_post_content_summary_with_paragraph_tags(db):
 
 def test_post_content_summary_without_paragraph_tags(db):
     content = 'Hello!!! Hello again.'
+    from django.contrib.auth.models import User
+    mixer.blend(User)
+    mixer.blend('post.PostCategory')
     post = mixer.blend('post.Post', content=content)
 
     actual = post.content_summary
@@ -61,6 +83,10 @@ def test_postcomment_str(db):
 
     comment = "Here's a string that's more than one hundred characters long. " \
               "It won't really fit on one line so it breaks pep 8 rules."
+    from django.contrib.auth.models import User
+    mixer.blend(User)
+    mixer.blend('post.PostCategory')
+    mixer.blend('post.Post')
     post_comment = mixer.blend('post.PostComment', comment=comment)
 
     actual = str(post_comment)
