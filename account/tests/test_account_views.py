@@ -18,7 +18,7 @@ def test_register_post_valid(register_valid_post_request, db_w_group):
 
     from unittest.mock import patch
     with patch('django.contrib.messages.success', return_value=None):
-        with patch('django.contrib.auth.login', return_value=None):
+        with patch('account.views.login', return_value=None):
             with patch('django.contrib.messages.info', return_value=None):
                 response = register(register_valid_post_request)
     assert response.status_code == 302
@@ -115,7 +115,7 @@ def test_login_valid_user_post_request(login_w_valid_db_user_post_request):
     assert response.url == '/'
 
 
-def test_login_valid_user_post_request(login_w_valid_db_user_post_request):
+def test_login_invalid_user_post_request(login_w_valid_db_user_post_request):
     from account.views import login_request
 
     response = login_request(login_w_valid_db_user_post_request)
@@ -123,3 +123,15 @@ def test_login_valid_user_post_request(login_w_valid_db_user_post_request):
     assert response.status_code == 200
     assert b'<li>Please enter a correct username and password. ' \
            b'Note that both fields may be case-sensitive.</li>' in response.content
+
+
+def test_logout_request(logout_request_request):
+    from account.views import logout_request
+    from unittest.mock import patch
+
+    with patch('account.views.logout'):
+        with patch('django.contrib.messages.info', return_value=None):
+            response = logout_request(logout_request_request)
+
+    assert response.status_code == 302
+    assert response.url == '/'

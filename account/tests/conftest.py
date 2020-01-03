@@ -117,3 +117,9 @@ def login_w_valid_db_user_post_request(login_request_request, db):
     yield request
 
 
+@pytest.fixture
+def logout_request_request(factory):
+    path = reverse('account:logout')
+    yield factory.get(path)
+
+
