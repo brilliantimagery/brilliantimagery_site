@@ -1,97 +1,4 @@
-import os
-
-from django.contrib.auth.models import Group, User, AnonymousUser
-from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
-from django.http import QueryDict
-from django.test import RequestFactory
-import pytest
-from django.urls import reverse
-from django.utils.datastructures import MultiValueDict
-from mixer.backend.django import mixer
-
-
-@pytest.fixture(scope='module')
-def factory():
-    yield RequestFactory()
-
-
-@pytest.fixture
-def register_request(factory):
-    path = reverse('account:register')
-    yield factory.get(path)
-
-
-@pytest.fixture
-def register_get_request(register_request):
-    register_request.method = "GET"
-    yield register_request
-
-
-@pytest.fixture
-def register_post_request(register_request):
-    register_request.method = "POST"
-    yield register_request
-
-
-@pytest.fixture
-def register_valid_post_request(register_post_request):
-    register_post_request.POST = QueryDict('username=user1&email=user1@address.com&'
-                                           'password1=lkjytrfds&password2=lkjytrfds')
-    yield register_post_request
-
-
-@pytest.fixture
-def register_password_mismatch_post_request(register_post_request):
-    register_post_request.POST = QueryDict('username=user1&email=user1@address.com&'
-                                           'password1=lkjytrfds&password2=lktrfds')
-    yield register_post_request
-
-
-@pytest.fixture
-def profile_request(factory):
-    path = reverse('account:profile')
-    yield factory.get(path)
-
-
-@pytest.fixture
-def profile_anonymous_user_get_request(profile_request):
-    profile_request.method = "GET"
-    profile_request.user = AnonymousUser()
-    yield profile_request
-
-
-@pytest.fixture
-def profile_logged_in_get_request(profile_request, db):
-    request = profile_request
-    request.method = "GET"
-    request.user = mixer.blend(User, username='user1', email='user1@address.com')
-    yield request
-
-
-@pytest.fixture
-def profile_logged_in_post_request(profile_logged_in_get_request, db):
-    request = profile_logged_in_get_request
-    request.method = "POST"
-    request.POST = QueryDict('username=user1&email=user1@address.com')
-    # file = InMemoryUploadedFile
-    path = os.path.join(os.path.abspath('.'), 'account', 'tests', 'test_image.jpg')
-    with open(path, 'rb') as f:
-        file = SimpleUploadedFile('test_image.jpg', f.read())
-    request.FILES['image'] = [file]
-    yield request
-
-
-@pytest.fixture
-def profile_logged_in_invalid_form_post_request(profile_logged_in_post_request, db):
-    request = profile_logged_in_post_request
-    request.POST = QueryDict('username=user1')
-    yield request
-
-
-@pytest.fixture
-def db_w_group(db):
-    mixer.blend(Group, name='basic_web_user')
-    yield None
+from unittest.mock import patch
 
 
 def test_register_get(register_get_request, db):
@@ -166,8 +73,8 @@ def test_profile_logged_in_post(profile_logged_in_post_request, db):
     from account.views import profile
 
     with patch('django.forms.forms.BaseForm.is_valid', return_value=True):
-        with patch('django.forms.models.BaseModelForm.save', return_value=True):
-            with patch('django.contrib.messages.success', return_value=None):
+        with patch('django.forms.models.BaseModelForm.save'):
+            with patch('django.contrib.messages.success'):
                 response = profile(profile_logged_in_post_request)
 
     assert response.status_code == 302
@@ -182,3 +89,37 @@ def test_profile_logged_in_invalid_form_post(profile_logged_in_invalid_form_post
     assert response.status_code == 200
     assert b'<input type="text" name="username" value="user1" maxlength="150" class="textinput ' \
            b'textInput form-control" required id="id_username">' in response.content
+
+
+def test_login_get_request(login_get_request):
+    from account.views import login_request
+
+    response = login_request(login_get_request)
+
+    assert response.status_code == 200
+    assert b'<legend class="border-bottom mb-4">Log In</legend>' in response.content
+
+
+def test_login_valid_user_post_request(login_w_valid_db_user_post_request):
+    from account.views import login_request
+    from unittest.mock import patch
+
+    with patch('django.forms.forms.BaseForm.is_valid', return_value=True):
+        with patch('account.views.AuthenticationForm'):
+            with patch('account.views.authenticate', return_value=True):
+                with patch('account.views.login'):
+                    with patch('account.views.messages.info'):
+                        response = login_request(login_w_valid_db_user_post_request)
+
+    assert response.status_code == 302
+    assert response.url == '/'
+
+
+def test_login_valid_user_post_request(login_w_valid_db_user_post_request):
+    from account.views import login_request
+
+    response = login_request(login_w_valid_db_user_post_request)
+
+    assert response.status_code == 200
+    assert b'<li>Please enter a correct username and password. ' \
+           b'Note that both fields may be case-sensitive.</li>' in response.content
