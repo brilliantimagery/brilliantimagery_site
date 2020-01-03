@@ -125,6 +125,19 @@ def test_login_invalid_user_post_request(login_w_valid_db_user_post_request):
            b'Note that both fields may be case-sensitive.</li>' in response.content
 
 
+def test_login_user_not_found_post_request(login_w_valid_db_user_post_request):
+    from account.views import login_request
+
+    with patch('django.forms.forms.BaseForm.is_valid', return_value=True):
+        with patch('account.views.AuthenticationForm'):
+            with patch('account.views.authenticate', return_value=None):
+                with patch('account.views.messages.error'):
+                    response = login_request(login_w_valid_db_user_post_request)
+
+    assert response.status_code == 200
+    assert b'href="/account/login/">Login</a>' in response.content
+
+
 def test_logout_request(logout_request_request):
     from account.views import logout_request
     from unittest.mock import patch
@@ -135,3 +148,12 @@ def test_logout_request(logout_request_request):
 
     assert response.status_code == 302
     assert response.url == '/'
+
+
+def test_privacy_policy_request(privacy_policy_request):
+    from account.views import privacy_policy
+
+    response = privacy_policy(privacy_policy_request)
+
+    assert response.status_code == 200
+    assert b'What We Gather and When' in response.content

@@ -123,3 +123,9 @@ def logout_request_request(factory):
     yield factory.get(path)
 
 
+@pytest.fixture
+def privacy_policy_request(factory):
+    path = reverse('account:privacy_policy')
+    yield factory.get(path)
+
+
