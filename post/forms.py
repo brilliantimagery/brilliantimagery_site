@@ -7,7 +7,6 @@ from post.models import PostComment
 
 
 class NewCommentForm(forms.ModelForm):
-    # comment = forms.CharField(widget=TinyMCE(mce_attrs={}))
     comment = forms.CharField(widget=TinyMCE(attrs={'placeholder': 'hello'}), max_length=10000)
 
     class Meta:
@@ -20,8 +19,5 @@ class NewCommentForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'class': '',
                                              'placeholder': 'Email Address',
                                              }),
-            # 'comment': forms.TextInput(attrs={'class': '',
-            #                                   'placeholder': 'Comment',
-            #                                   }),
         }
         
