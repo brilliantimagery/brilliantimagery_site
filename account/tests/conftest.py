@@ -1,6 +1,6 @@
 import os
 
-from django.contrib.auth.models import Group, User, AnonymousUser
+from django.contrib.auth.models import Group, User, AnonymousUser, Permission
 from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
 from django.http import QueryDict
 from django.test import RequestFactory
@@ -17,7 +17,9 @@ def factory():
 
 @pytest.fixture
 def db_w_group(db):
-    mixer.blend(Group, name='basic_web_user')
+    permission = mixer.blend(Permission, codename='do_stuff', name='Do Stuff')
+    group = mixer.blend(Group, name='basic_web_user')
+    group.permissions.add(permission)
     yield None
 
 
