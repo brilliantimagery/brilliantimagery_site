@@ -48,6 +48,3 @@ urlpatterns = [
     path('profile/', account_views.profile, name='profile'),
     path('register/', account_views.register, name='register'),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
