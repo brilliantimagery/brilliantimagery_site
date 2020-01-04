@@ -1,14 +1,4 @@
 from mixer.backend.django import mixer
-import pytest
-
-
-# @pytest.fixture(scope="module")
-# def initialized_db(db):
-#     from django.contrib.auth.models import User
-#     mixer.blend(User)
-#     mixer.blend('post.PostCategory')
-#     mixer.blend('post.Post')
-#     yield None
 
 
 def test_postcategory_str(db):

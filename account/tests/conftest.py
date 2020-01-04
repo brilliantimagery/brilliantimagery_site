@@ -9,6 +9,21 @@ from mixer.backend.django import mixer
 import pytest
 
 
+@pytest.fixture
+def user_w_updated_image(db_w_user):
+    from shutil import copyfile
+
+    user = db_w_user
+    image_path = os.path.join(os.path.abspath('.'), 'account', 'tests', 'test_image.jpg')
+    new_path = os.path.join(os.path.abspath('.'), 'account', 'tests', 'test_image2.jpg')
+
+    copyfile(image_path, new_path)
+
+    yield user, new_path
+
+    os.remove(new_path)
+
+
 @pytest.fixture(scope='module')
 def factory():
     yield RequestFactory()
