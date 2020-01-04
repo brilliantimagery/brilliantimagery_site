@@ -1,10 +1,8 @@
-from django import template
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User, Permission, Group
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
@@ -17,8 +15,7 @@ pagination_count = 4
 def detail_view(request, slug_category, date_slug, slug_post):
     post = get_object_or_404(Post, slug_post=slug_post)
 
-    context = {'post': post,
-               }
+    context = {'post': post}
     return render(request, 'post/post_detail.html', context=context)
 
 
@@ -33,14 +30,11 @@ def home_view(request):
     all_posts = Post.objects.order_by('-publish_date')[:results_per_subset]
     tutorials = Post.objects.order_by('-publish_date').filter(category__name__iexact='DNG101')[: 2]
 
-    context = {'object_list': posts,
-               'sidebar': {'All Posts': all_posts, 'Tutorials': tutorials},
-               }
+    context = {'object_list': posts, 'sidebar': {'All Posts': all_posts, 'Tutorials': tutorials}}
     return render(request, 'post/post_list.html', context=context)
 
 
 def user_post_list_view(request, username):
-    # user = get_object_or_404(User, username=self.kwargs.get('username'))
     user = get_object_or_404(User, username=username)
     posts = Post.objects.filter(author=user).order_by('-publish_date')
     paginated_posts = Paginator(posts, pagination_count)
@@ -49,10 +43,10 @@ def user_post_list_view(request, username):
 
     results_per_subset = 5
     # all_posts = Post.objects.order_by('-publish_date').values('title', 'category__slug_category', 'publish_date', 'slug_post')[:results_per_subset]
-    all_posts = Post.objects.filter(author=user).order_by('-publish_date')[:results_per_subset]
+    all_posts = Post.objects.filter(author=user). \
+                    order_by('-publish_date')[:results_per_subset]
     tutorials = Post.objects.filter(author=user). \
                     order_by('-publish_date').filter(category__name__iexact='DNG101')[: 2]
-                    # order_by('-publish_date').filter(category__name_iexact='DNG101')[: 2]
 
     context = {'object_list': posts,
                'sidebar': {'All Posts': all_posts, 'Tutorials': tutorials},
@@ -61,8 +55,10 @@ def user_post_list_view(request, username):
 
 
 def comment_view(request, slug_category, date_slug, slug_post):
-    post_id = request.GET.get('post-id')
-    comment_id = request.GET.get('comment-id')
+    # post_id = request.GET.get('post-id')
+    # comment_id = request.GET.get('comment-id')
+    post_id = int(request.GET.get('post-id', '0'))
+    comment_id = int(request.GET.get('comment-id', '0'))
 
     post_comment = PostComment()
     if request.user.is_authenticated:
@@ -77,8 +73,8 @@ def comment_view(request, slug_category, date_slug, slug_post):
 
     if request.method == 'GET':
         form = NewCommentForm(instance=post_comment)
-        form.post_id = int(post_id)
-        form.comment_id = int(comment_id) if comment_id and comment_id != '0' else 0
+        form.post_id = post_id
+        form.comment_id = comment_id
     else:
         form = NewCommentForm(request.POST)
 
@@ -88,8 +84,8 @@ def comment_view(request, slug_category, date_slug, slug_post):
             post_comment.username = form.cleaned_data.get('username')
             post_comment.email = form.cleaned_data.get('email')
             post_comment.comment = form.cleaned_data.get('comment')
-            post_comment.post_comment_id = int(post_id)
-            post_comment.comment_comment_id = int(comment_id) if comment_id else None
+            post_comment.post_comment_id = post_id
+            post_comment.comment_comment_id = comment_id if comment_id else None
             post_comment.save()
             post_comment.comment = None
 
@@ -115,23 +111,21 @@ def comment_view(request, slug_category, date_slug, slug_post):
 # @user_passes_test()
 @login_required
 def update_comment_view(request, slug_category, date_slug, slug_post):
-    post_id = int(request.GET.get('post-id'))
-    comment_id = int(request.GET.get('comment-id'))
+    post_id = int(request.GET.get('post-id', '0'))
+    comment_id = int(request.GET.get('comment-id', '0'))
     user = request.user
 
     comment = get_object_or_404(PostComment, post_comment_id=post_id, pk=comment_id)
-    # comment = PostComment.objects.get(pk=comment_id)
-    # groups = user.groups.all()
-    # for g in groups:
-    #     a = g
 
-    if comment.author != user and not user.groups.filter(name='editor').exists():
+    # if comment.author != user and not user.groups.filter(name='editor').exists():
+    if comment.author != user and \
+        not user.groups.filter(permissions__name__iexact='can change post comment').exists():
         raise PermissionDenied
 
     if request.method == 'GET':
         form = NewCommentForm(instance=comment)
-        form.post_id = int(post_id)
-        form.comment_id = int(comment_id)
+        form.post_id = post_id
+        form.comment_id = comment_id
     else:
         form = NewCommentForm(request.POST)
 
@@ -158,7 +152,8 @@ def update_comment_view(request, slug_category, date_slug, slug_post):
 
 
 def category_view(request, slug_category):
-    posts = Post.objects.filter(category__slug_category=slug_category).order_by('-publish_date').all()
+    posts = Post.objects.filter(category__slug_category=slug_category).\
+        order_by('-publish_date').all()
     return render(request, 'post/post_list.html', {'object_list': posts})
 
 

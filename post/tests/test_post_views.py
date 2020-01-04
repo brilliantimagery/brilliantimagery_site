@@ -1,0 +1,163 @@
+from unittest.mock import patch
+
+import pytest
+from django.core.exceptions import PermissionDenied
+
+
+def test_detail_view(detail_view_request, post_w_path_content):
+    from post.views import detail_view
+
+    post, path, content = post_w_path_content
+
+    with patch('post.views.get_object_or_404', return_value=post):
+        response = detail_view(detail_view_request, slug_category='-', date_slug='-', slug_post='-')
+
+    assert response.status_code == 200
+    assert b'<p>Hello again.</p>' in response.content
+
+
+def test_home_view_page_1(home_view_request, five_posts):
+    from post.views import home_view
+
+    with patch('post.views.pagination_count', 2):
+        response = home_view(home_view_request)
+
+    assert response.status_code == 200
+    assert b'Content 1' not in response.content
+    assert b'Content 2' not in response.content
+    assert b'Content 3' not in response.content
+    assert b'Content 4' in response.content
+    assert b'Content 5' in response.content
+    assert b'Title 1' in response.content
+    assert b'Title 2' in response.content
+    assert b'Title 3' in response.content
+    assert b'Title 4' in response.content
+    assert b'Title 5' in response.content
+
+
+def test_home_view_page_2(home_view_request_page_2, five_posts):
+    from post.views import home_view
+
+    with patch('post.views.pagination_count', 2):
+        response = home_view(home_view_request_page_2)
+
+    assert response.status_code == 200
+    assert b'Content 1' not in response.content
+    assert b'Content 2' in response.content
+    assert b'Content 3' in response.content
+    assert b'Content 4' not in response.content
+    assert b'Content 5' not in response.content
+    assert b'Title 1' in response.content
+    assert b'Title 2' in response.content
+    assert b'Title 3' in response.content
+    assert b'Title 4' in response.content
+    assert b'Title 5' in response.content
+
+
+def test_user_poser_list_page_1(home_view_request, five_posts):
+    from post.views import user_post_list_view
+
+    with patch('post.views.pagination_count', 2):
+        response = user_post_list_view(home_view_request, 'user1')
+
+    assert response.status_code == 200
+    assert b'Content 1' not in response.content
+    assert b'Content 2' not in response.content
+    assert b'Content 3' in response.content
+    assert b'Content 4' not in response.content
+    assert b'Content 5' in response.content
+    assert b'Title 1' in response.content
+    assert b'Title 2' not in response.content
+    assert b'Title 3' in response.content
+    assert b'Title 4' not in response.content
+    assert b'Title 5' in response.content
+
+
+def test_user_post_list_page_2(home_view_request_page_2, five_posts):
+    from post.views import user_post_list_view
+
+    with patch('post.views.pagination_count', 2):
+        response = user_post_list_view(home_view_request_page_2, 'user1')
+
+    assert response.status_code == 200
+    assert b'Content 1' in response.content
+    assert b'Content 2' not in response.content
+    assert b'Content 3' not in response.content
+    assert b'Content 4' not in response.content
+    assert b'Content 5' not in response.content
+    assert b'Title 1' in response.content
+    assert b'Title 2' not in response.content
+    assert b'Title 3' in response.content
+    assert b'Title 4' not in response.content
+    assert b'Title 5' in response.content
+
+
+def test_user_post_list_user_not_found(home_view_request_page_2, five_posts):
+    from post.views import user_post_list_view
+    from django.http.response import Http404
+
+    with pytest.raises(Http404):
+        user_post_list_view(home_view_request_page_2, 'not-user')
+
+
+def test_update_comment_view_not_logged_in(update_comment_not_logged_in_get_request, five_posts):
+    from post.views import update_comment_view
+
+    request = update_comment_view(update_comment_not_logged_in_get_request,
+                                  'DNG101', '2018-01-15', 'slug-1')
+
+    assert request.status_code == 302
+    assert request.url == '/account/login/?next=/dng101/2018-03-15/slug-1/update_comment/'
+
+
+def test_update_comment_view_wrong_user(update_comment_wrong_user_get_request, five_posts):
+    from post.views import update_comment_view
+
+    with pytest.raises(PermissionDenied):
+        update_comment_view(update_comment_wrong_user_get_request,
+                            'DNG101', '2018-01-15', 'slug-1')
+
+
+def test_update_comment_view_author_get(update_comment_author_get_request, five_posts):
+    from post.views import update_comment_view
+
+    request = update_comment_view(update_comment_author_get_request,
+                                  'DNG101', '2018-01-15', 'slug-1')
+
+    assert request.status_code == 200
+    assert b"<p>Here's a comment on the first comment</p>" in request.content
+
+
+def test_update_comment_view_editor_get(update_comment_editor_get_request, five_posts):
+    from post.views import update_comment_view
+
+    request = update_comment_view(update_comment_editor_get_request,
+                                  'DNG101', '2018-01-15', 'slug-1')
+
+    assert request.status_code == 200
+    assert b"<p>Here's a comment on the first comment</p>" in request.content
+
+
+def test_update_comment_view_invalid_comment_post(update_comment_invalid_comment_post_request,
+                                                  five_posts):
+    from post.views import update_comment_view
+
+    with patch('django.forms.forms.BaseForm.is_valid', return_value=False):
+        request = update_comment_view(update_comment_invalid_comment_post_request,
+                                      'DNG101', '2018-01-15', 'slug-1')
+
+    assert request.status_code == 200
+    assert b"It failed, hard." in request.content
+
+
+def test_update_comment_view_post(update_comment_editor_get_request, five_posts):
+    from post.views import update_comment_view
+
+    request = update_comment_view(update_comment_editor_get_request,
+                                  'DNG101', '2018-01-15', 'slug-1')
+
+    assert request.status_code == 200
+    assert b"<p>Here's a comment on the first comment</p>" in request.content
+
+
+# def test_comment_view

@@ -24,7 +24,8 @@ class Post(models.Model):
     author = models.ForeignKey(User, default=1, on_delete=models.SET_DEFAULT)
     content: str = models.TextField()
     publish_date: datetime = models.DateTimeField(default=timezone.now, blank=True)
-    category = models.ForeignKey(PostCategory, default=1, verbose_name='category', on_delete=models.SET_DEFAULT)
+    category = models.ForeignKey(PostCategory, default=1, verbose_name='category',
+                                 on_delete=models.SET_DEFAULT)
     slug_post = models.CharField(max_length=200, default='', unique=True, null=True, blank=True)
     comments_enabled = models.BooleanField(default=True)
 
@@ -39,9 +40,11 @@ class Post(models.Model):
         return self.content
 
     def get_absolute_url(self):
-        return reverse('post-slugged:detail-view', kwargs={'slug_category': self.category.slug_category,
-                                                           'date_slug': self.publish_date.strftime('%Y-%m-%d'),
-                                                           'slug_post': self.slug_post})
+        return reverse('post-slugged:detail-view',
+                       kwargs={'slug_category': self.category.slug_category,
+                               'date_slug': self.publish_date.strftime('%Y-%m-%d'),
+                               'slug_post': self.slug_post}
+                       )
 
 
 class PostComment(models.Model):
