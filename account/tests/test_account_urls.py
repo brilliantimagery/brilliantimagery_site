@@ -1,5 +1,6 @@
 from django.urls import reverse, resolve
 
+
 class TestAccountUrls:
 
     def test_privacy_policy_url(self):

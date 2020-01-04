@@ -1,18 +1,32 @@
 import os
 
-from django.contrib.auth.models import Group, User, AnonymousUser, Permission
-from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
+from django.contrib.auth.models import AnonymousUser, Group, Permission, User
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import QueryDict
 from django.test import RequestFactory
-import pytest
 from django.urls import reverse
-from django.utils.datastructures import MultiValueDict
 from mixer.backend.django import mixer
+import pytest
 
 
 @pytest.fixture(scope='module')
 def factory():
     yield RequestFactory()
+
+
+@pytest.fixture
+def db_w_user(db):
+    return mixer.blend(User, username='user1', email='user1@address.com')
+
+
+@pytest.fixture
+def db_w_updated_user(db_w_user):
+    new_username = 'user1a'
+    new_email = 'user1a@address.com'
+    user = db_w_user
+    user.username = new_username
+    user.email = new_email
+    return user, new_username, new_email
 
 
 @pytest.fixture
@@ -129,5 +143,3 @@ def logout_request_request(factory):
 def privacy_policy_request(factory):
     path = reverse('account:privacy_policy')
     yield factory.get(path)
-
-

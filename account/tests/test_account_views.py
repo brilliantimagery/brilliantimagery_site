@@ -25,18 +25,6 @@ def test_register_post_valid(register_valid_post_request, db_w_group):
     assert response.url == '/'
 
 
-# def test_register_post_user_exists(register_valid_post_request, db_w_group):
-#     from account.views import register
-#
-#     from unittest.mock import patch
-#     with patch('django.contrib.messages.success', return_value=None):
-#         with patch('django.contrib.auth.login', return_value=None):
-#             with patch('django.contrib.messages.info', return_value=None):
-#                 response = register(register_valid_post_request)
-#     assert response.status_code == 302
-#     assert response.url == '/'
-
-
 def test_register_post_password_mismatch(register_password_mismatch_post_request, db_w_group):
     from account.views import register
 

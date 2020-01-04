@@ -7,21 +7,6 @@ import pytest
 from django.contrib.auth.models import User
 
 
-@pytest.fixture
-def db_w_user(db):
-    return mixer.blend(User, username='user1', email='user1@address.com')
-
-
-@pytest.fixture
-def db_w_updated_user(db_w_user):
-    new_username = 'user1a'
-    new_email = 'user1a@address.com'
-    user = db_w_user
-    user.username = new_username
-    user.email = new_email
-    return user, new_username, new_email
-
-
 # @pytest.fixture
 # def user_w_updated_image(db_w_user, tmpdir):
 #     from shutil import copyfile
