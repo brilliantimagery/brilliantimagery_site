@@ -16,12 +16,10 @@ Including another URLconf
 from django.urls import path
 
 from . import views
-from post.views import PostListView, home_view
+from post.views import home_view
 
 app_name = 'main'
 
 urlpatterns = [
-    # path('', views.home, name='home'),
-    # path('', PostListView.as_view(), name='home'),
     path('', home_view, name='home'),
 ]
