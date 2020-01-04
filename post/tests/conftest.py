@@ -172,10 +172,7 @@ def update_comment_invalid_comment_post_request(update_comment_not_logged_in_get
 
 
 @pytest.fixture
-def update_comment_post_request(update_comment_not_logged_in_get_request, five_posts):
-    request = update_comment_not_logged_in_get_request
-    _, users, __, ___ = five_posts
-    request.user = users[0]
-    request.GET = QueryDict()
-    request.GET = QueryDict('comment=Here\'s an updated comment!!&post-id=1&comment-id=2')
+def update_comment_post_request(update_comment_invalid_comment_post_request, five_posts):
+    request = update_comment_invalid_comment_post_request
+    request.POST = QueryDict('comment=Here\'s an updated comment!!&post-id=1&comment-id=2')
     yield request

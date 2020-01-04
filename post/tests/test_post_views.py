@@ -150,14 +150,18 @@ def test_update_comment_view_invalid_comment_post(update_comment_invalid_comment
     assert b"It failed, hard." in request.content
 
 
-def test_update_comment_view_post(update_comment_editor_get_request, five_posts):
+def test_update_comment_view_post(update_comment_post_request, five_posts):
+    from post.models import PostComment
     from post.views import update_comment_view
 
-    request = update_comment_view(update_comment_editor_get_request,
+    request = update_comment_view(update_comment_post_request,
                                   'DNG101', '2018-01-15', 'slug-1')
 
-    assert request.status_code == 200
-    assert b"<p>Here's a comment on the first comment</p>" in request.content
+    actual_saved_comment = PostComment.objects.get(pk=2).comment
+
+    assert request.status_code == 302
+    assert request.url == '/DNG101/2018-01-15/slug-1/'
+    assert actual_saved_comment == "Here's an updated comment!!"
 
 
 # def test_comment_view
