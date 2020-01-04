@@ -7,7 +7,7 @@ from django.utils import timezone
 
 
 class PostCategory(models.Model):
-    category = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
     summary = models.CharField(max_length=200)
     slug_category = models.CharField(max_length=200, default=1)
     comments_enabled = models.BooleanField(default=True)
@@ -16,7 +16,7 @@ class PostCategory(models.Model):
         verbose_name_plural = 'PostCategories'
 
     def __str__(self):
-        return self.category
+        return self.name
 
 
 class Post(models.Model):

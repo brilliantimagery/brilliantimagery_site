@@ -3,7 +3,7 @@ from mixer.backend.django import mixer
 
 def test_postcategory_str(db):
     category = 'Hello!!! Hello again.'
-    post_category = mixer.blend('post.PostCategory', category=category)
+    post_category = mixer.blend('post.PostCategory', name=category)
 
     actual = str(post_category)
     expected = category

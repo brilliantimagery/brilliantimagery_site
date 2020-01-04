@@ -31,7 +31,7 @@ def home_view(request):
     results_per_subset = 5
     # all_posts = Post.objects.order_by('-publish_date').values('title', 'category__slug_category', 'publish_date', 'slug_post')[:results_per_subset]
     all_posts = Post.objects.order_by('-publish_date')[:results_per_subset]
-    tutorials = Post.objects.order_by('-publish_date').filter(category__category__iexact='DNG101')[: 2]
+    tutorials = Post.objects.order_by('-publish_date').filter(category__name__iexact='DNG101')[: 2]
 
     context = {'object_list': posts,
                'sidebar': {'All Posts': all_posts, 'Tutorials': tutorials},
@@ -51,7 +51,8 @@ def user_post_list_view(request, username):
     # all_posts = Post.objects.order_by('-publish_date').values('title', 'category__slug_category', 'publish_date', 'slug_post')[:results_per_subset]
     all_posts = Post.objects.filter(author=user).order_by('-publish_date')[:results_per_subset]
     tutorials = Post.objects.filter(author=user). \
-                    order_by('-publish_date').filter(category__category__iexact='DNG101')[: 2]
+                    order_by('-publish_date').filter(category__name__iexact='DNG101')[: 2]
+                    # order_by('-publish_date').filter(category__name_iexact='DNG101')[: 2]
 
     context = {'object_list': posts,
                'sidebar': {'All Posts': all_posts, 'Tutorials': tutorials},

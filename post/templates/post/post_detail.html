@@ -11,7 +11,7 @@
                     <div>
                         <a class="mr-2" href="{% url 'post:user-posts' post.author.username %}">{{ post.author }}</a>
                     </div>
-                    <a class="mr-2" href="{% url 'post-slugged:category-view' post.category.slug_category %}">{{ post.category.category }}</a>
+                    <a class="mr-2" href="{% url 'post-slugged:category-view' post.category.slug_category %}">{{ post.category.name }}</a>
                     <small class="text-muted">{{ post.publish_date|date:"F d, Y" }}</small>
                     {% if post.author == user %}
                         <div>
