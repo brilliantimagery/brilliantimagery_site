@@ -1,3 +1,5 @@
+{% load user_utils %}
+
 <div class="comment">
     <div class="media">
         <img class="rounded-circle article-img" alt="User Profile Picture" src="{{ comment.author.profile.image.url }}">
@@ -8,16 +10,7 @@
         </div>
     </div>
     <p>{{ comment.comment|safe }}</p>
-
-{#    {% ifequal user.groups.all.0.name 'editor' %}#}
-{#        True#}
-{#    {% endifequal %}#}
-{#    {% for g in user.groups.all %}#}
-{#        {% for p in g.permissions.all %}#}
-{#            {{ p }}#}
-{#        {% endfor %}#}
-{#    {% endfor %}#}
-    {% if comment.author == user or user.groups.all.0.name == 'editor' %}
+    {% if comment.author == user or user|has_permission:"can add post" %}
         <a href="{% url 'post-slugged:update_comment' slug_category=post.category.slug_category date_slug=post.publish_date|date:"Y-m-d" slug_post=post.slug_post %}?post-id={{ post.pk }}&comment-id={{ comment.pk }}#comment-form">Edit</a>
         <br>
     {% endif %}
