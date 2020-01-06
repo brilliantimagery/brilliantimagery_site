@@ -37,9 +37,9 @@ def five_posts(db):
     group = mixer.blend(Group, name='editor')
     group.permissions.add(permission)
 
-    users = [mixer.blend(User, username='user1'),
-             mixer.blend(User, username='user2'),
-             mixer.blend(User, username='user3')]
+    users = [mixer.blend(User, username='user1', email='user1@address.com'),
+             mixer.blend(User, username='user2', email='user2@address.com'),
+             mixer.blend(User, username='user3', email='user3@address.com')]
 
     group.user_set.add(users[1])
     group.save()
@@ -51,7 +51,6 @@ def five_posts(db):
                          title=f'Title {i}',
                          content=f'Content {i}',
                          slug_post=f'slug-{i}',
-
                          category_id=1,
                          user_id=1,
                          publish_date=datetime(2018, i, 15))
@@ -119,6 +118,52 @@ def user_post_list_request_page_2(user_post_list_request):
 
 
 @pytest.fixture
+def comment_view_request(factory):
+    path = reverse('post-slugged:comment', kwargs={'slug_category': 'dng101',
+                                                   'date_slug': '2018-01-15',
+                                                   'slug_post': 'slug-1'})
+    yield factory.get(path)
+
+
+@pytest.fixture
+def comment_view_user_get_request(comment_view_request, five_posts):
+    request = comment_view_request
+    _, users, __, ___ = five_posts
+    request.user = users[0]
+    request.method = 'GET'
+    yield request
+
+
+@pytest.fixture
+def comment_view_anonymous_get_request(comment_view_request):
+    request = comment_view_request
+    request.user = AnonymousUser()
+    request.method = 'GET'
+    yield request
+
+
+@pytest.fixture
+def comment_view_user_post_request(comment_view_request, five_posts):
+    request = comment_view_request
+    _, users, __, ___ = five_posts
+    request.user = users[0]
+    request.method = 'POST'
+    request.GET = QueryDict('post-id=1&comment-id=0')
+    request.POST = QueryDict('username=user1&email=user1@address.com&comment=Here\'s a comment!')
+    yield request
+
+
+@pytest.fixture
+def comment_view_anonymous_post_request(comment_view_request):
+    request = comment_view_request
+    request.user = AnonymousUser()
+    request.method = 'POST'
+    request.GET = QueryDict('post-id=1&comment-id=0')
+    request.POST = QueryDict('username=user1&email=user1@address.com&comment=Here\'s a comment!')
+    yield request
+
+
+@pytest.fixture
 def update_comment_request(factory):
     path = reverse('post-slugged:update_comment', kwargs={'slug_category': 'dng101',
                                                           'date_slug': '2018-03-15',
@@ -162,7 +207,8 @@ def update_comment_editor_get_request(update_comment_not_logged_in_get_request, 
 
 
 @pytest.fixture
-def update_comment_invalid_comment_post_request(update_comment_not_logged_in_get_request, five_posts):
+def update_comment_invalid_comment_post_request(update_comment_not_logged_in_get_request,
+                                                five_posts):
     request = update_comment_not_logged_in_get_request
     _, users, __, ___ = five_posts
     request.user = users[0]

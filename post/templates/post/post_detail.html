@@ -15,8 +15,8 @@
                     <small class="text-muted">{{ post.publish_date|date:"F d, Y" }}</small>
                     {% if post.author == user %}
                         <div>
-                            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-slugged:update' post.category.slug_category post.publish_date|date:"o-m-d" post.slug_post %}">Update</a>
-                            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-slugged:delete' post.category.slug_category post.publish_date|date:"o-m-d" post.slug_post %}">Delete</a>
+                            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-slugged:update' post.category.slug_category post.publish_date|date:"Y-m-d" post.slug_post %}">Update</a>
+                            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-slugged:delete' post.category.slug_category post.publish_date|date:"Y-m-d" post.slug_post %}">Delete</a>
                         </div>
                     {% endif %}
                 </div>
@@ -27,7 +27,7 @@
         </div>
         {% if post.comments_enabled and post.category.comments_enabled %}
             {% if not form %}
-                <a href="{% url 'post-slugged:comment' slug_category=post.category.slug_category date_slug=post.publish_date|date:"o-m-d" slug_post=post.slug_post %}?post-id={{ post.pk }}&comment-id={{ 0 }}#comment-form" class="btn btn-outline-secondary btn-sm">Comment</a>
+                <a href="{% url 'post-slugged:comment' slug_category=post.category.slug_category date_slug=post.publish_date|date:"Y-m-d" slug_post=post.slug_post %}?post-id={{ post.pk }}&comment-id={{ 0 }}#comment-form" class="btn btn-outline-secondary btn-sm">Comment</a>
             {% elif not form.comment_id   %}
                 {% include 'post/includes/_comment_form.html' %}
             {% endif %}
@@ -41,6 +41,20 @@
         </div>
     </article>
 {% endblock main_content %}
+
+{% block sidebar_content %}
+    <div class="content-section">
+        <h3>More Content</h3>
+        {% for section, posts in sidebar.items %}
+            <p class='text-muted'>{{ section }}</p>
+            <ul class="list-group">
+            {% for post in posts %}
+                <a href="{% url 'post-slugged:detail-view' post.category.slug_category post.publish_date|date:"Y-m-d" post.slug_post %}" class="list-group-item list-group-item-light">{{ post.title }}</a>
+            {% endfor %}
+            </ul>
+        {% endfor %}
+    </div>
+{% endblock sidebar_content %}
 
 {% block additional_js %}
     <script src="{% static 'main/js/tinymce/tinymce.min.js' %}"></script>

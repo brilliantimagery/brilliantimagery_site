@@ -18,12 +18,12 @@
 {#        {% endfor %}#}
 {#    {% endfor %}#}
     {% if comment.author == user or user.groups.all.0.name == 'editor' %}
-        <a href="{% url 'post-slugged:update_comment' slug_category=post.category.slug_category date_slug=post.publish_date|date:"o-m-d" slug_post=post.slug_post %}?post-id={{ post.pk }}&comment-id={{ comment.pk }}#comment-form">Edit</a>
+        <a href="{% url 'post-slugged:update_comment' slug_category=post.category.slug_category date_slug=post.publish_date|date:"Y-m-d" slug_post=post.slug_post %}?post-id={{ post.pk }}&comment-id={{ comment.pk }}#comment-form">Edit</a>
         <br>
     {% endif %}
     {% if post.comments_enabled and post.category.comments_enabled %}
         {% if not form %}
-            <a href="{% url 'post-slugged:comment' slug_category=post.category.slug_category date_slug=post.publish_date|date:"o-m-d" slug_post=post.slug_post %}?post-id={{ post.pk }}&comment-id={{ comment.pk }}#comment-form" class="btn btn-outline-secondary btn-sm">Comment</a>
+            <a href="{% url 'post-slugged:comment' slug_category=post.category.slug_category date_slug=post.publish_date|date:"Y-m-d" slug_post=post.slug_post %}?post-id={{ post.pk }}&comment-id={{ comment.pk }}#comment-form" class="btn btn-outline-secondary btn-sm">Comment</a>
         {% elif form.comment_id == comment.id %}
             {% include 'post/includes/_comment_form.html' %}
         {% endif %}

@@ -1,3 +1,6 @@
+# from datetime.datetime import strptime
+import datetime
+
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User, Permission, Group
@@ -6,16 +9,17 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
-from .models import Post, PostComment
+from .models import Post, PostComment, PostCategory
 from .forms import NewCommentForm
 
 pagination_count = 4
+posts_per_sidebar_topic = 5
 
 
 def detail_view(request, slug_category, date_slug, slug_post):
     post = get_object_or_404(Post, slug_post=slug_post)
 
-    context = {'post': post}
+    context = {'post': post, 'sidebar': _sidebar()}
     return render(request, 'post/post_detail.html', context=context)
 
 
@@ -25,12 +29,7 @@ def home_view(request):
     page = request.GET.get('page')
     posts = paginated_posts.get_page(page)
 
-    results_per_subset = 5
-    # all_posts = Post.objects.order_by('-publish_date').values('title', 'category__slug_category', 'publish_date', 'slug_post')[:results_per_subset]
-    all_posts = Post.objects.order_by('-publish_date')[:results_per_subset]
-    tutorials = Post.objects.order_by('-publish_date').filter(category__name__iexact='DNG101')[: 2]
-
-    context = {'object_list': posts, 'sidebar': {'All Posts': all_posts, 'Tutorials': tutorials}}
+    context = {'object_list': posts, 'sidebar': _sidebar()}
     return render(request, 'post/post_list.html', context=context)
 
 
@@ -41,22 +40,11 @@ def user_post_list_view(request, username):
     page = request.GET.get('page')
     posts = paginated_posts.get_page(page)
 
-    results_per_subset = 5
-    # all_posts = Post.objects.order_by('-publish_date').values('title', 'category__slug_category', 'publish_date', 'slug_post')[:results_per_subset]
-    all_posts = Post.objects.filter(author=user). \
-                    order_by('-publish_date')[:results_per_subset]
-    tutorials = Post.objects.filter(author=user). \
-                    order_by('-publish_date').filter(category__name__iexact='DNG101')[: 2]
-
-    context = {'object_list': posts,
-               'sidebar': {'All Posts': all_posts, 'Tutorials': tutorials},
-               }
+    context = {'object_list': posts, 'sidebar': _sidebar(author=user)}
     return render(request, 'post/post_list.html', context=context)
 
 
 def comment_view(request, slug_category, date_slug, slug_post):
-    # post_id = request.GET.get('post-id')
-    # comment_id = request.GET.get('comment-id')
     post_id = int(request.GET.get('post-id', '0'))
     comment_id = int(request.GET.get('comment-id', '0'))
 
@@ -74,7 +62,7 @@ def comment_view(request, slug_category, date_slug, slug_post):
     if request.method == 'GET':
         form = NewCommentForm(instance=post_comment)
         form.post_id = post_id
-        form.comment_id = comment_id
+        form.comment_id = comment_id if comment_id else None
     else:
         form = NewCommentForm(request.POST)
 
@@ -98,12 +86,18 @@ def comment_view(request, slug_category, date_slug, slug_post):
 
         form = NewCommentForm(instance=post_comment)
 
-    post = get_object_or_404(Post, slug_post=slug_post)
+    # timezone stuff likely causing an issue
+    post = get_object_or_404(Post,
+                             # category__slug_category=slug_category,
+                             # publish_date=datetime.datetime.strptime(date_slug, "%Y-%m-%d"),
+                             slug_post=slug_post)
 
     context = {'post': post,
                'form': form,
-               'button_name': 'Comment'
+               'button_name': 'Comment',
+               'sidebar': _sidebar()
                }
+
     return render(request, 'post/post_detail.html', context=context)
 
 
@@ -117,9 +111,8 @@ def update_comment_view(request, slug_category, date_slug, slug_post):
 
     comment = get_object_or_404(PostComment, post_comment_id=post_id, pk=comment_id)
 
-    # if comment.author != user and not user.groups.filter(name='editor').exists():
     if comment.author != user and \
-        not user.groups.filter(permissions__name__iexact='can change post comment').exists():
+            not user.groups.filter(permissions__name__iexact='can change post comment').exists():
         raise PermissionDenied
 
     if request.method == 'GET':
@@ -152,9 +145,16 @@ def update_comment_view(request, slug_category, date_slug, slug_post):
 
 
 def category_view(request, slug_category):
-    posts = Post.objects.filter(category__slug_category=slug_category).\
+    posts = Post.objects.filter(category__slug_category=slug_category). \
         order_by('-publish_date').all()
-    return render(request, 'post/post_list.html', {'object_list': posts})
+
+    paginated_posts = Paginator(posts, pagination_count)
+    page = request.GET.get('page')
+    posts = paginated_posts.get_page(page)
+
+    return render(request, 'post/post_list.html',
+                  {'object_list': posts,
+                   'sidebar': _sidebar(category__name__iexact=slug_category)})
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -185,10 +185,10 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 #     slug_url_kwarg = 'slug_post'
 
 
-class PostListView(ListView):
-    model = Post
-    ordering = ['-publish_date']
-    pagination_count = 5
+# class PostListView(ListView):
+#     model = Post
+#     ordering = ['-publish_date']
+#     pagination_count = 5
 
 
 # class UserPostListView(ListView):
@@ -215,3 +215,23 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
+
+
+def _sidebar(**kwargs):
+    # all_posts = Post.objects.order_by('-publish_date').values('title', 'category__slug_category', 'publish_date', 'slug_post')[:results_per_subset]
+
+    filters = kwargs.copy()
+    filters.pop('category__name', None)
+    filters.pop('category__name__iexact', None)
+    all_posts = Post.objects.filter(**filters).order_by('-publish_date')[:posts_per_sidebar_topic]
+    sidebar = {'All Posts': all_posts}
+
+    categories = PostCategory.objects.values_list('name', flat=True)
+
+    for cat in categories:
+        posts = Post.objects.filter(**kwargs).order_by('-publish_date'). \
+                    filter(category__name__iexact=cat)[: posts_per_sidebar_topic]
+        if posts:
+            sidebar[cat] = posts
+
+    return sidebar

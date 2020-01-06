@@ -15,7 +15,7 @@
                     <a class="mr-2" href="{% url 'post:user-posts' object.author.username %}">{{ object.author }}</a>
                     <small class="text-muted">{{ object.publish_date|date:"F d, Y" }}</small>
                 </div>
-                <h2><a class="article-title" href="{% url 'post-slugged:detail-view' object.category.slug_category object.publish_date|date:"o-m-d" object.slug_post %}">{{ object.title }}</a></h2>
+                <h2><a class="article-title" href="{% url 'post-slugged:detail-view' object.category.slug_category object.publish_date|date:"Y-m-d" object.slug_post %}">{{ object.title }}</a></h2>
                 <p class="article-content">{{ object.content_summary|safe }}</p>
             </div>
         </article>
@@ -46,7 +46,7 @@
             <p class='text-muted'>{{ section }}</p>
             <ul class="list-group">
             {% for post in posts %}
-                <a href="{% url 'post-slugged:detail-view' post.category.slug_category post.publish_date|date:"o-m-d" post.slug_post %}" class="list-group-item list-group-item-light">{{ post.title }}</a>
+                <a href="{% url 'post-slugged:detail-view' post.category.slug_category post.publish_date|date:"Y-m-d" post.slug_post %}" class="list-group-item list-group-item-light">{{ post.title }}</a>
             {% endfor %}
             </ul>
         {% endfor %}
