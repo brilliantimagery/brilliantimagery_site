@@ -18,15 +18,20 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from post.models import PostCategory
+# from post.models import PostCategory
+# from main import views
+from post.views import home_view
 
+
+app_name = 'bi_site'
 
 urlpatterns = [
-    # path(r'^$', include('main.urls')),
-    path('', include('main.urls')),
+    # path('', include('main.urls')),
+    path('', home_view, name='home'),
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
     path('tinymce/', include('tinymce.urls')),
+    path('main/', include('main.urls')),
     path('posts/', include('post.urls')),
     path('<slug:slug_category>/', include('post.urls_slugged')),
 ]

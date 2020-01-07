@@ -16,7 +16,7 @@ def register(request):
             messages.success(request, f'New account created for: {username}')
             login(request, user)
             messages.info(request, f'You are now logged in as: {username}')
-            return redirect('main:home')
+            return redirect('home')
         else:
             for error, msg in form.error_messages.items():
                 messages.error(request, f'{error}: {msg}')
@@ -64,7 +64,7 @@ def login_request(request):
             if user is not None:
                 login(request, user)
                 messages.info(request, f'You are now logged in as: {username}')
-                return redirect('main:home')
+                return redirect('home')
             else:
                 messages.error(request, 'The username or password that you entered was invalid.')
     else:
@@ -77,7 +77,7 @@ def login_request(request):
 def logout_request(request):
     logout(request)
     messages.info(request, "You have been successfully logged out.")
-    return redirect('main:home')
+    return redirect('home')
 
 
 def privacy_policy(request):

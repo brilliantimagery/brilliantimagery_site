@@ -93,7 +93,7 @@ def detail_view_request(factory):
 
 @pytest.fixture
 def home_view_request(factory):
-    path = reverse('main:home')
+    path = reverse('home')
     yield factory.get(path)
 
 
