@@ -3,7 +3,10 @@
 
 <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
     <div class="container">
-        <img src="{% static 'main/images/icon_100px_white_transparent.png' %}" alt="Brilliant Imagery logo" class="navbar-image">
+        <a href="{% url 'main:home' %}">
+            <img src="{% static 'main/images/icon_50px_white_transparent.png' %}"
+                 alt="Brilliant Imagery logo" class="navbar-image">
+        </a>
         <a class="navbar-brand mr-4" href="{% url 'main:home' %}">Brilliant Imagery</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -11,13 +14,11 @@
         <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
                 <a class="nav-item nav-link" href="{% url 'main:home' %}">Home</a>
-                {#              <a class="nav-item nav-link" href="{% url 'blog-about' %}">About</a>#}
                 <a class="nav-item nav-link" href="#">About</a>
             </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
                 {% if user.is_authenticated %}
-{#                    {{ user.groups.all.0.name }}#}
                     {% if user|has_permission:"can add post" %}
                         <a class="nav-item nav-link" href="{% url 'post:create-new' %}">New Post</a>
                     {% endif %}
