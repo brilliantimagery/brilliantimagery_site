@@ -1,7 +1,9 @@
+{% load static %}
 {% load user_utils %}
 
 <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
     <div class="container">
+        <img src="{% static 'main/images/icon_100px_white_transparent.png' %}" alt="Brilliant Imagery logo" class="navbar-image">
         <a class="navbar-brand mr-4" href="{% url 'main:home' %}">Brilliant Imagery</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>

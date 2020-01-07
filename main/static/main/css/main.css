@@ -116,6 +116,11 @@ a.article-title:hover {
   background-color: #f1f1f1;
 }
 
+.navbar-image {
+    height: 40px;
+    padding-right: 5px;
+}
+
 @media (min-width: 800px) {
     .container{
         max-width: 700px;
