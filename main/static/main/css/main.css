@@ -83,6 +83,16 @@ a.article-title:hover {
   font-size: 2.5rem;
 }
 
+.sidebar-section-title {
+  margin-top: 4px;
+  margin-bottom: 2px;
+}
+
+.sidebar-item {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
 /*.collapsible {*/
 /*  background-color: #777;*/
 /*  color: white;*/

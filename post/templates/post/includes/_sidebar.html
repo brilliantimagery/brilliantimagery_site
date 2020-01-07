@@ -1,0 +1,12 @@
+<div class="content-section">
+    <h3>Recent Content</h3>
+    {% for section, posts in sidebar.items %}
+        <p class='text-muted sidebar-section-title'>{{ section }}</p>
+        <ul class="list-group">
+            {% for post in posts %}
+                <a href="{% url 'post-slugged:detail-view' post.category.slug_category post.publish_date|date:"Y-m-d" post.slug_post %}"
+                   class="list-group-item list-group-item-light sidebar-item">{{ post.title }}</a>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+</div>
