@@ -16,18 +16,20 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import path, include
 
-# from post.models import PostCategory
-# from main import views
 from post.views import home_view
+from main.sitemap import StaticViewSitemap, SluggedViewSiteMap
 
 
-app_name = 'bi_site'
+sitemaps = {'static': StaticViewSitemap,
+            'slugged': SluggedViewSiteMap,
+            }
 
 urlpatterns = [
-    # path('', include('main.urls')),
     path('', home_view, name='home'),
+    path('sitemap.xml/', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
     path('tinymce/', include('tinymce.urls')),

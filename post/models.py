@@ -18,6 +18,10 @@ class PostCategory(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('post-slugged:category-view',
+                       kwargs={'slug_category': self.slug_category})
+
 
 class Post(models.Model):
     title: str = models.CharField(max_length=200, null=True, blank=True)
