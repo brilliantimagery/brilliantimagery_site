@@ -54,7 +54,7 @@ $ python manage.py runserver
 
 ### Testing
 
-Start the virtual environment if it isn't yet running. This need's to be done from within the top level `bi_site` folder.
+Start the virtual environment if it isn't yet running. This need's to be done from within the top level `bi_site` folder. Also, the config file and tests expect there to a folder 'media' within the top level 'brilliantimagery_site' folder and a 'default.jpg' file within the 'media' folder. Put those there if they don't yet exist.
 
 ```
 $ pipenv shell
@@ -68,7 +68,7 @@ $ pytest
 
 If test coverage is to be generated insure that no lines in `pytest.ini` are commented out.
 
-```ini
+```
 [pytest]
 DJANGO_SETTINGS_MODULE = bi_site.settings
 addopts = --cov --cov-report=html
@@ -76,7 +76,7 @@ addopts = --cov --cov-report=html
 
 Coverage generation can cause issues with IDE debuggers that result in breakpoints not being honored. If an IDE isn't stopping at your breakpoints, comment out the `addopts` line from `pytest.ini`.
 
-```ini
+```
 [pytest]
 DJANGO_SETTINGS_MODULE = bi_site.settings
 ;addopts = --cov --cov-report=html
