@@ -32,6 +32,7 @@ urlpatterns = [
     path('sitemap.xml/', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
+    path('docs/', include('docs.urls')),
     path('tinymce/', include('tinymce.urls')),
     path('main/', include('main.urls')),
     path('posts/', include('post.urls')),
