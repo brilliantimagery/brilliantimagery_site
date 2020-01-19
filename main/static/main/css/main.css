@@ -12,6 +12,14 @@ ul {
     margin: 0;
 }
 
+a {
+    color: #373C40;
+}
+
+a:hover {
+    color: #B4B9BD;
+}
+
 .bg-steel {
     background-color: #5f788a;
 }

@@ -18,9 +18,9 @@
     <link rel="shortcut icon" href="{% static 'main/images/favicon.ico' %}" />
 
     {% if title %}
-        <title>Brilliant Imagery - {{ title }}</title>
+        <title>BrilliantImagery - {{ title }}</title>
     {% else %}
-        <title>Brilliant Imagery</title>
+        <title>BrilliantImagery</title>
     {% endif %}
 
     {{ form.media }}
@@ -43,4 +43,8 @@
 {#    <script src="{% static 'tinymce/js/prism.js' %}"></script>#}
     {% block additional_js %}{% endblock additional_js %}
 </body>
+<footer class="container">
+    <small class="text-muted">&copy; Copyright 2020 BrilliantImagery</small>
+
+</footer>
 </html>

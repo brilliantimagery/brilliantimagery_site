@@ -1,4 +1,4 @@
-# Brilliant Imagery Site
+# BrilliantImagery Site
 
 ## Development
 

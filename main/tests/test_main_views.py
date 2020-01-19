@@ -14,7 +14,7 @@ def test_about_view():
         response = about_view(request)
 
     assert response.status_code == 200
-    assert b'<h1>Brilliant Imagery</h1>' in response.content
+    assert b'<h1>BrilliantImagery</h1>' in response.content
 
 
 def test_license_view():
