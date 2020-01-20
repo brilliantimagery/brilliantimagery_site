@@ -20,6 +20,7 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import path, include
 
 from post.views import home_view
+from main.views import downloads_view
 from main.sitemap import StaticViewSitemap, SluggedViewSiteMap
 
 
@@ -34,6 +35,7 @@ urlpatterns = [
     path('account/', include('account.urls')),
     path('docs/', include('docs.urls')),
     path('tinymce/', include('tinymce.urls')),
+    path('downloads/', downloads_view, name='downloads'),
     path('main/', include('main.urls')),
     path('posts/', include('post.urls')),
     path('<slug:slug_category>/', include('post.urls_slugged')),
