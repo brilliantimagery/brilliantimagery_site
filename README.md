@@ -16,6 +16,10 @@ Create a virtual environment and install both the dev and production dependencie
 $ pipenv install --dev
 ```
 
+Create a ``/bi_site/config.py`` file based on ``/bi_site/example_config.py``.
+
+Create a ``/docs`` folder within ``/brilliantimagery_site``
+
 ### Dev Server Initialization and Setup
 
 A `config.py` file needs to be generated. This can be done by duplicating the file `\bi_site\config_example.py` and rename it to generate the file `\bi_site\config.py`. Change the enclosed string values as needed. `SECRET_KEY` is a 50 character random string. `EMAIL_HOST_USER` is the email address that the site will sends things such as password change emails from. The present settings file assumes that it's an email address managed by GMail. `EMAIL_HOST_PASSWORD` is the password for the entered email. The system also assumes that 2FA has been set up for the email address and that the password is the password generated for an app. Setting up 2FA and getting the app password is beyond the scop of this README.

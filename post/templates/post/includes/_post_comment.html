@@ -2,7 +2,11 @@
 
 <div class="comment">
     <div class="media">
-        <img class="rounded-circle article-img" alt="User Profile Picture" src="{{ comment.author.profile.image.url }}">
+        {% if comment.author %}
+            <img class="rounded-circle article-img" alt="User Profile Picture" src="{{ comment.author.profile.image.url }}">
+        {% else %}
+            <img class="rounded-circle article-img" alt="User Profile Picture" src="/media/default.jpg">
+        {% endif %}
         <div class="media-body">
             {{ comment.author.username }}
             <br>
