@@ -93,7 +93,6 @@ mkdir /apps/logs/pypi
 mkdir /apps/logs/pypi/app_log
 cd /apps
 
-
 # Create a virtual env for the app.
 cd /apps
 sudo python3.8 -m pip install --upgrade pip setuptools
@@ -102,6 +101,15 @@ python3.8 -m venv venv
 pip install --upgrade pip setuptools
 pip install --upgrade httpie glances
 pip install --upgrade uwsgi
+
+# install the app
+git clone https://github.com/brilliantimagery/brilliantimagery_site.git
+cd brilliantimagery_site
+pip install -r requirements.txt
+
+# make a few folders
+sudo mkdir /apps/brilliantimagery_site/docs
+sudo mkdir /apps/brilliantimagery_site/media/profile_pics
 
 
 
