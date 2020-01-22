@@ -1,0 +1,15 @@
+[Unit]
+Description=uWSGI BrilliantImagery server instance
+After=syslog.target
+
+[Service]
+ExecStart=/apps/venv/bin/uwsgi --http-socket 0.0.0.0:8000 --chdir /apps/brilliantimagery_site/ --wsgi-file bi_site/wsgi.py --master --processes 4 --threads 2
+RuntimeDirectory=uwsgi
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
