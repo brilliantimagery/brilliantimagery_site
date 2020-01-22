@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name brilliantimagery.org;
+    server_name brilliantimagery.org www.brilliantimagery.org;
     server_tokens off;
     charset utf-8;
     client_max_body_size 150M;
@@ -11,6 +11,14 @@ server {
         uwsgi_buffers   8 256k;
 
         alias /apps/brilliantimagery_site/static;
+        expires 365d;
+    }
+    location /media {
+        gzip            on;
+        gzip_buffers    8 256k;
+        uwsgi_buffers   8 256k;
+
+        alias /apps/brilliantimagery_site/media;
         expires 365d;
     }
     location / {

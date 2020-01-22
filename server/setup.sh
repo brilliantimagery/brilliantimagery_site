@@ -110,9 +110,37 @@ pip install -r requirements.txt
 # make a few folders
 sudo mkdir /apps/brilliantimagery_site/docs
 sudo mkdir /apps/brilliantimagery_site/media/profile_pics
+# transfer docs from local machine
+scp -r <path\to\>\brilliantimagery_site\docs\* <username>@<ip address>:/apps/docs
+scp -r <path\to\>\brilliantimagery_site\bi_site\config.py <username>@<ip address>:/apps/
+# move db if desired
+scp -r <path\to\>\brilliantimagery_site\db.sqlite3 <username>@<ip address>:/apps/
+sudo mv /apps/db.sqlite3 /apps/brilliantimagery_site/
+# move transfered files
+sudo mv /apps/docs/* /apps/brilliantimagery_site/docs
+sudo mv /apps/config.py /apps/brilliantimagery_site/bi_site
 
+# move the static files
+cd /apps/brilliantimagery_site
+python manage.py collectstatic
 
+# test server
+python manage.py runserver 0.0.0.0:8000
+# test file creation, user creation, reset password, upload avatar
 
+# Copy and enable the daemon
+sudo cp /apps/brilliantimagery_site/server/bi_site.service /etc/systemd/system/bi_site.service
+
+sudo systemctl start bi_site
+sudo systemctl status bi_site
+sudo systemctl enable bi_site
+
+# CAREFUL HERE. If you are using default, maybe skip this
+sudo rm /etc/nginx/sites-enabled/default
+
+sudo cp /apps/brilliantimagery_site/server/bi_site.nginx /etc/nginx/sites-enabled/bi_site.nginx
+sudo update-rc.d nginx enable
+sudo service nginx restart
 
 
 
@@ -120,6 +148,12 @@ sudo mkdir /apps/brilliantimagery_site/media/profile_pics
 # want 80 and 443 open
 sudo ufw delete allow 8000
 sudo ufw allow http/tcp
+sudo ufw allow 443
 sudo ufw enable
 sudo ufw status
 sudo /etc/init.d/nginx restart
+
+# restart uwsgi
+sudo systemctl restart bi_site
+# restart nginx
+sudo systemctl restart nginx
