@@ -157,3 +157,6 @@ sudo /etc/init.d/nginx restart
 sudo systemctl restart bi_site
 # restart nginx
 sudo systemctl restart nginx
+
+# check server status
+glances
