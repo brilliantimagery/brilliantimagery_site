@@ -52,7 +52,7 @@ def comment_view(request, slug_category, date_slug, slug_post):
     if request.user.is_authenticated:
         user = request.user
         post_comment.author = user
-        post_comment.username = user.username
+        post_comment.name = user.username
         post_comment.email = request.user.email
     else:
         user = None
