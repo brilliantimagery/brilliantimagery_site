@@ -53,7 +53,7 @@ class Post(models.Model):
 
 class PostComment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, default=1, null=True, blank=True)
-    username = models.CharField(max_length=50, default='', null=True, blank=True)
+    name = models.CharField(max_length=50, default='', null=True, blank=True)
     email = models.CharField(max_length=50, default='', null=True, blank=True)
     publish_date: datetime = models.DateTimeField(default=timezone.now, blank=True)
     comment: str = models.TextField(default='')
