@@ -7,11 +7,11 @@
         {% else %}
             <img class="rounded-circle article-img" alt="User Profile Picture" src="/media/default.jpg">
         {% endif %}
-        <div class="media-body">
+        <div class="media-body" id="{{ comment.pk }}">
             {% if comment.author %}
                 {{ comment.author.username }}
-            {% elif comment.username != None %}
-                {{ comment.username }}
+            {% elif comment.name != None %}
+                {{ comment.name }}
             {% else %}
                 Anonymous
             {% endif %}

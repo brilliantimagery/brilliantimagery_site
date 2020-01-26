@@ -1,10 +1,12 @@
 # from datetime.datetime import strptime
 import datetime
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User, Permission, Group
 from django.core.exceptions import PermissionDenied
+from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
@@ -69,12 +71,22 @@ def comment_view(request, slug_category, date_slug, slug_post):
         if form.is_valid():
             post_comment = PostComment()
             post_comment.author = user
-            post_comment.username = form.cleaned_data.get('username')
+            post_comment.name = form.cleaned_data.get('name')
             post_comment.email = form.cleaned_data.get('email')
             post_comment.comment = form.cleaned_data.get('comment')
             post_comment.post_comment_id = post_id
             post_comment.comment_comment_id = comment_id if comment_id else None
             post_comment.save()
+
+            send_mail('Someone Left a comment',
+                      f'{post_comment.name} said "{post_comment.comment}" '
+                      f'at https://brilliantimagery.org'
+                      f'{request.path.replace("comment/", "")}#{post_comment.pk}',
+                      'brilliantimagerysoftware@gmail.com',
+                      settings.COMMENT_EMAIL_RECIPIENTS,
+                      fail_silently=True
+                      )
+
             post_comment.comment = None
 
             return redirect('post-slugged:detail-view',
