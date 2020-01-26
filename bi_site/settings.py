@@ -26,8 +26,10 @@ SECRET_KEY = config.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+# DEBUG = True
 
 ALLOWED_HOSTS = ['157.245.247.75', 'brilliantimagery.org', 'www.brilliantimagery.org']
+# ALLOWED_HOSTS = []
 
 
 TINYMCE_DEFAULT_CONFIG = {
@@ -180,5 +182,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config.EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = config.EMAIL_HOST_PASSWORD
+
+COMMENT_EMAIL_RECIPIENTS = config.COMMENT_EMAIL_RECIPIENTS
 
 DOCS_ROOT = os.path.join(BASE_DIR, 'docs/html')
