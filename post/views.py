@@ -82,7 +82,7 @@ def comment_view(request, slug_category, date_slug, slug_post):
                       f'{post_comment.name} said "{post_comment.comment}" '
                       f'at https://brilliantimagery.org'
                       f'{request.path.replace("comment/", "")}#{post_comment.pk}',
-                      'brilliantimagerysoftware@gmail.com',
+                      settings.EMAIL_HOST_USER,
                       settings.COMMENT_EMAIL_RECIPIENTS,
                       fail_silently=True
                       )
