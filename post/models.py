@@ -11,6 +11,7 @@ class PostCategory(models.Model):
     summary = models.CharField(max_length=200)
     slug_category = models.CharField(max_length=200, default=1)
     comments_enabled = models.BooleanField(default=True)
+    static_post = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = 'PostCategories'
@@ -44,11 +45,17 @@ class Post(models.Model):
         return self.content
 
     def get_absolute_url(self):
-        return reverse('post-slugged:detail-view',
-                       kwargs={'slug_category': self.category.slug_category,
-                               'date_slug': self.publish_date.strftime('%Y-%m-%d'),
-                               'slug_post': self.slug_post}
-                       )
+        if self.category.static_post:
+            return reverse('post-slugged:main-or-date-view',
+                           kwargs={'slug_category': self.category.slug_category,
+                                   'date_slug': self.slug_post}
+                           )
+        else:
+            return reverse('post-slugged:detail-view',
+                           kwargs={'slug_category': self.category.slug_category,
+                                   'date_slug': self.publish_date.strftime('%Y-%m-%d'),
+                                   'slug_post': self.slug_post}
+                           )
 
 
 class PostComment(models.Model):
@@ -63,8 +70,6 @@ class PostComment(models.Model):
                                      related_name='post_comments', null=True, blank=True)
     comment_comment = models.ForeignKey('self', on_delete=models.CASCADE, default=None,
                                         related_name='comment_comments', null=True, blank=True)
-
-    special_post = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = 'PostComments'

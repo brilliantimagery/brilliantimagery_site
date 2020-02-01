@@ -23,7 +23,7 @@ app_name = 'post-slugged'
 
 urlpatterns = [
     path('', views.category_view, name='category-view'),
-    # path('<slug:date_slug>/<slug:slug_post>/', PostDetailView.as_view(), name='detail-view'),
+    path('<slug:date_slug>/', views.main_or_date_view, name='main-or-date-view'),
     path('<slug:date_slug>/<slug:slug_post>/', views.detail_view, name='detail-view'),
     path('<slug:date_slug>/<slug:slug_post>/delete/', PostDeleteView.as_view(), name='delete'),
     path('<slug:date_slug>/<slug:slug_post>/update/', PostUpdateView.as_view(), name='update'),

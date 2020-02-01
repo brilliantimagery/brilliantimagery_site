@@ -10,8 +10,7 @@ class PostAdmin(admin.ModelAdmin):
         ('Title/date', {'fields': ['title', 'publish_date', 'author']}),
         ('URL', {'fields': ['slug_post']}),
         ('Category', {'fields': ['category']}),
-        ('Content', {'fields': ['content', 'comments_enabled']})
-        ('Type', {'fields': ['special_post']}),
+        ('Content', {'fields': ['content', 'comments_enabled']}),
     ]
 
     formfield_overrides = {

@@ -25,8 +25,15 @@ def detail_view(request, slug_category, date_slug, slug_post):
     return render(request, 'post/post_detail.html', context=context)
 
 
+def main_or_date_view(request, slug_category, date_slug):
+    post = get_object_or_404(Post, slug_post=date_slug)
+
+    context = {'post': post, 'sidebar': _sidebar()}
+    return render(request, 'post/post_detail.html', context=context)
+
+
 def home_view(request):
-    posts = Post.objects.order_by('-publish_date').all()
+    posts = Post.objects.order_by('-publish_date').filter(category__static_post=False).all()
     paginated_posts = Paginator(posts, pagination_count)
     page = request.GET.get('page')
     posts = paginated_posts.get_page(page)
@@ -235,10 +242,10 @@ def _sidebar(**kwargs):
     filters = kwargs.copy()
     filters.pop('category__name', None)
     filters.pop('category__name__iexact', None)
-    all_posts = Post.objects.filter(**filters).order_by('-publish_date')[:posts_per_sidebar_topic]
+    all_posts = Post.objects.filter(**filters).filter(category__static_post=False).order_by('-publish_date')[:posts_per_sidebar_topic]
     sidebar = {'All Posts': all_posts}
 
-    categories = PostCategory.objects.values_list('name', flat=True)
+    categories = PostCategory.objects.filter(static_post=False).values_list('name', flat=True)
 
     for cat in categories:
         posts = Post.objects.filter(**kwargs).order_by('-publish_date'). \

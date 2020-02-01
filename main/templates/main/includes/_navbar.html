@@ -17,11 +17,12 @@
         <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
                 <a class="nav-item nav-link" href="{% url 'home' %}">Home</a>
-                <a class="nav-item nav-link" href="{% url 'main:about' %}">About</a>
+                <a class="nav-item nav-link" href="{% url 'post-slugged:main-or-date-view' 'main' 'about' %}">About</a>
             </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
-                <a class="nav-item nav-link" href="{% url 'downloads' %}">Downloads</a>
+{#                <a class="nav-item nav-link" href="{% url 'downloads' %}">Downloads</a>#}
+                <a class="nav-item nav-link" href="{% url 'post-slugged:main-or-date-view' 'main' 'downloads' %}">Downloads</a>
                 <div class="dropdown">
                     <button class="dropbtn nav-item nav-link">Development <i class="fa fa-caret-down"></i></button>
                     <div class="dropdown-content">
@@ -31,7 +32,8 @@
                             code</a>
                     </div>
                 </div>
-                <a class="nav-item nav-link" href="{% url 'main:license' %}">License</a>
+                <a class="nav-item nav-link" href="{% url 'post-slugged:main-or-date-view' 'main' 'license' %}">License</a>
+{#                <a class="nav-item nav-link" href="{% url 'main:license' %}">License</a>#}
                 {% if user.is_authenticated %}
                     {% if user|has_permission:"can add post" %}
                         <a class="nav-item nav-link" href="{% url 'post:create-new' %}">New Post</a>

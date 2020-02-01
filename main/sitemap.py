@@ -6,15 +6,15 @@ from django.shortcuts import reverse
 from post.models import Post, PostCategory
 
 
-class StaticViewSitemap(Sitemap):
-
-    def items(self):
-        return ['main:about',
-                'main:license',
-                ]
-
-    def location(self, obj):
-        return reverse(obj)
+# class StaticViewSitemap(Sitemap):
+#
+#     def items(self):
+#         return ['main:about',
+#                 'main:license',
+#                 ]
+#
+#     def location(self, obj):
+#         return reverse(obj)
 
 
 class SluggedViewSiteMap(Sitemap):
