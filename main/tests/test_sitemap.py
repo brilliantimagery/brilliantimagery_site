@@ -2,18 +2,16 @@ from django.contrib.sitemaps.views import sitemap
 from django.test import RequestFactory
 from django.urls import reverse
 
-from post.tests.conftest import five_posts
+from post.tests.conftest import six_posts
 
 
-def test_sitemap(five_posts):
-    from main.sitemap import StaticViewSitemap
+def test_sitemap(six_posts):
     from main.sitemap import SluggedViewSiteMap
 
     path = reverse('sitemap')
     request = RequestFactory().get(path)
 
-    sitemaps = {'static': StaticViewSitemap,
-                'slugged': SluggedViewSiteMap,
+    sitemaps = {'slugged': SluggedViewSiteMap,
                 }
 
     response = sitemap(request, sitemaps=sitemaps)
