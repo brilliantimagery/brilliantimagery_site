@@ -64,6 +64,8 @@ class PostComment(models.Model):
     comment_comment = models.ForeignKey('self', on_delete=models.CASCADE, default=None,
                                         related_name='comment_comments', null=True, blank=True)
 
+    special_post = models.BooleanField(default=False)
+
     class Meta:
         verbose_name_plural = 'PostComments'
 
