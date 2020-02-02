@@ -10,19 +10,19 @@ def test_detail_view(detail_view_request, post_w_path_content):
     post, path, content = post_w_path_content
 
     with patch('post.views.get_object_or_404', return_value=post):
-        response = detail_view(detail_view_request, slug_category='-', date_slug='-', slug_post='-')
+        response = detail_view(detail_view_request, root_slug='-', date_slug='-', post_slug='-')
 
     assert response.status_code == 200
     assert b'<p>Hello again.</p>' in response.content
 
 
-def test_main_or_date_view(detail_main_and_date_request, post_w_path_content):
-    from post.views import main_or_date_view
+def test_root_view(detail_main_and_date_request, post_w_path_content):
+    from post.views import root_view
 
     post, path, content = post_w_path_content
 
-    with patch('post.views.get_object_or_404', return_value=post):
-        response = main_or_date_view(detail_main_and_date_request, slug_category='-', date_slug='-')
+    with patch('django.db.models.query.QuerySet.first', return_value=post):
+        response = root_view(detail_main_and_date_request, root_slug='-')
 
     assert response.status_code == 200
     assert b'<p>Hello again.</p>' in response.content
@@ -246,10 +246,10 @@ def test_update_comment_view_post(update_comment_post_request, six_posts):
 
 
 def test_category_view_page_1(home_view_request, six_posts):
-    from post.views import category_view
+    from post.views import root_view
 
     with patch('post.views.pagination_count', 2):
-        response = category_view(home_view_request, 'dng101')
+        response = root_view(home_view_request, 'dng101')
 
     assert response.status_code == 200
     assert b'Content 1' not in response.content
@@ -265,10 +265,10 @@ def test_category_view_page_1(home_view_request, six_posts):
 
 
 def test_category_view_page_2(home_view_request_page_2, six_posts):
-    from post.views import category_view
+    from post.views import root_view
 
     with patch('post.views.pagination_count', 2):
-        response = category_view(home_view_request_page_2, 'dng101')
+        response = root_view(home_view_request_page_2, 'dng101')
 
     assert response.status_code == 200
     assert b'Content 1' in response.content

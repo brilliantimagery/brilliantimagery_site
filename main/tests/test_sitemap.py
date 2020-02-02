@@ -17,5 +17,5 @@ def test_sitemap(six_posts):
     response = sitemap(request, sitemaps=sitemaps)
 
     assert response.status_code == 200
-    assert '<loc>http://testserver/main/about/</loc>' in response.rendered_content
+    assert '<loc>http://testserver/about/</loc>' in response.rendered_content
     assert '<loc>http://testserver/other/2018-04-15/slug-4/</loc>' in response.rendered_content

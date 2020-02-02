@@ -2,12 +2,12 @@
     {% csrf_token %}
     {{ form.as_p }}
     <input type="hidden" name="comment-pk" value="{{ post.pk }} {{ comment.pk }}">
-    <a href="{% url 'post-slugged:detail-view' post.category.slug_category post.publish_date|date:"Y-m-d" post.slug_post %}" class="btn btn-dark">Cancel</a>
+    <a href="{% url 'post-slugged:detail-view' post.category.root_slug post.publish_date|date:"Y-m-d" post.post_slug %}" class="btn btn-dark">Cancel</a>
     <button class="btn btn-danger" type="submit" value="{{ post.pk }} {{ comment.pk }}">{{ button_name }}</button>
     {% if not user.is_authenticated %}
         <small class="text-muted">
-            If you already have an account, please <a href="{% url 'account:login' %}?next=/{{ post.series.category.slug_category }}/{{ post.series.slug_series }}/{{ post.slug_post }}/">login</a>,
-            If you want a lasting identity, please <a href="{% url 'account:register' %}?next=/{{ post.series.category.slug_category }}/{{ post.series.slug_series }}/{{ post.slug_post }}/">register</a>!
+            If you already have an account, please <a href="{% url 'account:login' %}?next=/{{ post.category.root_slug }}/{{ post.publish_date|date:"Y-m-d" }}/{{ post.post_slug }}/">login</a>,
+            If you want a lasting identity, please <a href="{% url 'account:register' %}?next=/{{ post.category.root_slug }}/{{ post.publish_date|date:"Y-m-d" }}/{{ post.post_slug }}/">register</a>!
         </small>
     {% endif %}
 </form>

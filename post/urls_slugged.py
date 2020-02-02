@@ -22,11 +22,10 @@ from .views import PostCreateView, PostDeleteView, PostUpdateView
 app_name = 'post-slugged'
 
 urlpatterns = [
-    path('', views.category_view, name='category-view'),
-    path('<slug:date_slug>/', views.main_or_date_view, name='main-or-date-view'),
-    path('<slug:date_slug>/<slug:slug_post>/', views.detail_view, name='detail-view'),
-    path('<slug:date_slug>/<slug:slug_post>/delete/', PostDeleteView.as_view(), name='delete'),
-    path('<slug:date_slug>/<slug:slug_post>/update/', PostUpdateView.as_view(), name='update'),
-    path('<slug:date_slug>/<slug:slug_post>/comment/', views.comment_view, name='comment'),
-    path('<slug:date_slug>/<slug:slug_post>/update_comment/', views.update_comment_view, name='update_comment'),
+    path('', views.root_view, name='root-view'),
+    path('<slug:date_slug>/<slug:post_slug>/', views.detail_view, name='detail-view'),
+    path('<slug:date_slug>/<slug:post_slug>/delete/', PostDeleteView.as_view(), name='delete'),
+    path('<slug:date_slug>/<slug:post_slug>/update/', PostUpdateView.as_view(), name='update'),
+    path('<slug:date_slug>/<slug:post_slug>/comment/', views.comment_view, name='comment'),
+    path('<slug:date_slug>/<slug:post_slug>/update_comment/', views.update_comment_view, name='update_comment'),
 ]

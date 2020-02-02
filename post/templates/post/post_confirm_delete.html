@@ -13,7 +13,7 @@
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">Yes, Delete</button>
-                <a class="btn btn-secondary" href="{% url 'post-slugged:detail-view' object.category.slug_category object.publish_date|date:"Y-m-d" object.slug_post %}">Cancel</a>
+                <a class="btn btn-secondary" href="{% url 'post-slugged:detail-view' object.category.root_slug object.publish_date|date:"Y-m-d" object.post_slug %}">Cancel</a>
             </div>
         </form>
     </div>

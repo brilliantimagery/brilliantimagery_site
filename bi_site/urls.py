@@ -40,7 +40,7 @@ urlpatterns = [
     path('tinymce/', include('tinymce.urls')),
     # path('main/', include('main.urls')),
     path('posts/', include('post.urls')),
-    path('<slug:slug_category>/', include('post.urls_slugged')),
+    path('<slug:root_slug>/', include('post.urls_slugged')),
 ]
 
 if settings.DEBUG:
