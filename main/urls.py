@@ -17,12 +17,3 @@ from django.urls import path
 
 from . import views
 from post.views import home_view
-from main.views import about_view, license_view
-
-app_name = 'main'
-
-urlpatterns = [
-    # path('', home_view, name='home'),
-    path('about/', about_view, name='about'),
-    path('license/', license_view, name='license')
-]

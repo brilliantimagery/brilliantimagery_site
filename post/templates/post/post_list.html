@@ -8,14 +8,26 @@
     {% endif %}
     {% for object in object_list %}
         <article class="media content-section">
-            <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
-            <div class="media-body">
+            {% if object.category.is_root_post %}
+                <div class="media-body">
+                <h2><a class="article-title"
+                       href="{% url 'post-slugged:root-view' object.post_slug %}">{{ object.title }}</a>
+                </h2>
+            {% else %}
+                <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
+                <div class="media-body">
                 <div class="article-metadata">
-                    <a class="mr-2" href="{% url 'post-slugged:category-view' object.category.slug_category %}">{{ object.category.name }}</a>
-                    <a class="mr-2" href="{% url 'post:user-posts' object.author.username %}">{{ object.author }}</a>
+                    <a class="mr-2"
+                       href="{% url 'post-slugged:root-view' object.category.root_slug %}">{{ object.category.name }}</a>
+                    <a class="mr-2"
+                       href="{% url 'post:user-posts' object.author.username %}">{{ object.author }}</a>
                     <small class="text-muted">{{ object.publish_date|date:"F d, Y" }}</small>
                 </div>
-                <h2><a class="article-title" href="{% url 'post-slugged:detail-view' object.category.slug_category object.publish_date|date:"Y-m-d" object.slug_post %}">{{ object.title }}</a></h2>
+                <h2><a class="article-title"
+                       href="{% url 'post-slugged:detail-view' object.category.root_slug object.publish_date|date:"Y-m-d" object.post_slug %}">{{ object.title }}</a>
+                </h2>
+
+            {% endif %}
                 <p class="article-content">{{ object.content_summary|safe }}</p>
             </div>
         </article>

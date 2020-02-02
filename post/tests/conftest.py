@@ -17,10 +17,10 @@ def post_w_path_content(db):
     content = '<p>Hello!!!</p> <p>Hello again.</p>'
 
     mixer.blend(User)
-    mixer.blend(PostCategory, category='Cat 1', slug_category='cat1')
+    mixer.blend(PostCategory, category='Cat 1', root_slug='cat1')
     post = mixer.blend(Post,
                        content=content,
-                       slug_post='heres-a-slug',
+                       post_slug='heres-a-slug',
                        category_id=1,
                        publish_date=datetime(2018, 8, 15))
 
@@ -28,7 +28,7 @@ def post_w_path_content(db):
 
 
 @pytest.fixture
-def five_posts(db):
+def six_posts(db):
     from post.models import Post, PostCategory, PostComment
 
     permission = mixer.blend(Permission,
@@ -44,13 +44,14 @@ def five_posts(db):
     group.user_set.add(users[1])
     group.save()
 
-    categories = [mixer.blend(PostCategory, name='DNG101', slug_category='dng101'),
-                  mixer.blend(PostCategory, name='other', slug_category='other')]
+    categories = [mixer.blend(PostCategory, name='DNG101', root_slug='dng101'),
+                  mixer.blend(PostCategory, name='Other', root_slug='other'),
+                  mixer.blend(PostCategory, name='Main', root_slug='main', is_root_post=True)]
 
     posts = [mixer.blend(Post,
                          title=f'Title {i}',
                          content=f'Content {i}',
-                         slug_post=f'slug-{i}',
+                         post_slug=f'slug-{i}',
                          category_id=1,
                          user_id=1,
                          publish_date=datetime(2018, i, 15))
@@ -60,6 +61,15 @@ def five_posts(db):
     posts[3].author_id = 2
     posts[3].category_id = 2
     posts[4].category_id = 2
+
+    posts.append(mixer.blend(Post,
+                             title='Title 6',
+                             content=f'Content 6',
+                             post_slug=f'about',
+                             category_id=3,
+                             user_id=1,
+                             publish_date=datetime(2018, 6, 15)))
+
     [p.save() for p in posts]
 
     comments = [mixer.blend(PostComment,
@@ -84,9 +94,17 @@ def five_posts(db):
 @pytest.fixture
 def detail_view_request(factory):
     path = reverse('post-slugged:detail-view',
-                   kwargs={'slug_category': 'hello',
+                   kwargs={'root_slug': 'hello',
                            'date_slug': 'hello2',
-                           'slug_post': 'hello3'}
+                           'post_slug': 'hello3'}
+                   )
+    yield factory.get(path)
+
+
+@pytest.fixture
+def detail_main_and_date_request(factory):
+    path = reverse('post-slugged:root-view',
+                   kwargs={'root_slug': 'about',}
                    )
     yield factory.get(path)
 
@@ -119,16 +137,16 @@ def user_post_list_request_page_2(user_post_list_request):
 
 @pytest.fixture
 def comment_view_request(factory):
-    path = reverse('post-slugged:comment', kwargs={'slug_category': 'dng101',
+    path = reverse('post-slugged:comment', kwargs={'root_slug': 'dng101',
                                                    'date_slug': '2018-01-15',
-                                                   'slug_post': 'slug-1'})
+                                                   'post_slug': 'slug-1'})
     yield factory.get(path)
 
 
 @pytest.fixture
-def comment_view_user_get_request(comment_view_request, five_posts):
+def comment_view_user_get_request(comment_view_request, six_posts):
     request = comment_view_request
-    _, users, __, ___ = five_posts
+    _, users, __, ___ = six_posts
     request.user = users[0]
     request.method = 'GET'
     yield request
@@ -143,9 +161,9 @@ def comment_view_anonymous_get_request(comment_view_request):
 
 
 @pytest.fixture
-def comment_view_user_post_request(comment_view_request, five_posts):
+def comment_view_user_post_request(comment_view_request, six_posts):
     request = comment_view_request
-    _, users, __, ___ = five_posts
+    _, users, __, ___ = six_posts
     request.user = users[0]
     request.method = 'POST'
     request.GET = QueryDict('post-id=1&comment-id=0')
@@ -165,9 +183,9 @@ def comment_view_anonymous_post_request(comment_view_request):
 
 @pytest.fixture
 def update_comment_request(factory):
-    path = reverse('post-slugged:update_comment', kwargs={'slug_category': 'dng101',
+    path = reverse('post-slugged:update_comment', kwargs={'root_slug': 'dng101',
                                                           'date_slug': '2018-03-15',
-                                                          'slug_post': 'slug-1'})
+                                                          'post_slug': 'slug-1'})
     yield factory.get(path)
 
 
@@ -183,34 +201,34 @@ def update_comment_not_logged_in_get_request(update_comment_request):
 
 
 @pytest.fixture
-def update_comment_wrong_user_get_request(update_comment_not_logged_in_get_request, five_posts):
+def update_comment_wrong_user_get_request(update_comment_not_logged_in_get_request, six_posts):
     request = update_comment_not_logged_in_get_request
-    _, users, __, ___ = five_posts
+    _, users, __, ___ = six_posts
     request.user = users[2]
     yield request
 
 
 @pytest.fixture
-def update_comment_author_get_request(update_comment_not_logged_in_get_request, five_posts):
+def update_comment_author_get_request(update_comment_not_logged_in_get_request, six_posts):
     request = update_comment_not_logged_in_get_request
-    _, users, __, ___ = five_posts
+    _, users, __, ___ = six_posts
     request.user = users[0]
     yield request
 
 
 @pytest.fixture
-def update_comment_editor_get_request(update_comment_not_logged_in_get_request, five_posts):
+def update_comment_editor_get_request(update_comment_not_logged_in_get_request, six_posts):
     request = update_comment_not_logged_in_get_request
-    _, users, __, ___ = five_posts
+    _, users, __, ___ = six_posts
     request.user = users[1]
     yield request
 
 
 @pytest.fixture
 def update_comment_invalid_comment_post_request(update_comment_not_logged_in_get_request,
-                                                five_posts):
+                                                six_posts):
     request = update_comment_not_logged_in_get_request
-    _, users, __, ___ = five_posts
+    _, users, __, ___ = six_posts
     request.user = users[0]
     request.method = 'POST'
     request.POST = QueryDict('comment=It failed, hard.&post-id=1&comment-id=2')
@@ -218,7 +236,7 @@ def update_comment_invalid_comment_post_request(update_comment_not_logged_in_get
 
 
 @pytest.fixture
-def update_comment_post_request(update_comment_invalid_comment_post_request, five_posts):
+def update_comment_post_request(update_comment_invalid_comment_post_request, six_posts):
     request = update_comment_invalid_comment_post_request
     request.POST = QueryDict('comment=Here\'s an updated comment!!&post-id=1&comment-id=2')
     yield request

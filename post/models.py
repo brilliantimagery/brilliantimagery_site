@@ -9,8 +9,9 @@ from django.utils import timezone
 class PostCategory(models.Model):
     name = models.CharField(max_length=200)
     summary = models.CharField(max_length=200)
-    slug_category = models.CharField(max_length=200, default=1)
+    root_slug = models.CharField(max_length=200, default=1)
     comments_enabled = models.BooleanField(default=True)
+    is_root_post = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = 'PostCategories'
@@ -19,8 +20,8 @@ class PostCategory(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('post-slugged:category-view',
-                       kwargs={'slug_category': self.slug_category})
+        return reverse('post-slugged:root-view',
+                       kwargs={'root_slug': self.root_slug})
 
 
 class Post(models.Model):
@@ -30,7 +31,7 @@ class Post(models.Model):
     publish_date: datetime = models.DateTimeField(default=timezone.now, blank=True)
     category = models.ForeignKey(PostCategory, default=1, verbose_name='category',
                                  on_delete=models.SET_DEFAULT)
-    slug_post = models.CharField(max_length=200, default='', unique=True, null=True, blank=True)
+    post_slug = models.CharField(max_length=200, default='', unique=True, null=True, blank=True)
     comments_enabled = models.BooleanField(default=True)
 
     def __str__(self):
@@ -44,11 +45,16 @@ class Post(models.Model):
         return self.content
 
     def get_absolute_url(self):
-        return reverse('post-slugged:detail-view',
-                       kwargs={'slug_category': self.category.slug_category,
-                               'date_slug': self.publish_date.strftime('%Y-%m-%d'),
-                               'slug_post': self.slug_post}
-                       )
+        if self.category.is_root_post:
+            return reverse('post-slugged:root-view',
+                           kwargs={'root_slug': self.post_slug}
+                           )
+        else:
+            return reverse('post-slugged:detail-view',
+                           kwargs={'root_slug': self.category.root_slug,
+                                   'date_slug': self.publish_date.strftime('%Y-%m-%d'),
+                                   'post_slug': self.post_slug}
+                           )
 
 
 class PostComment(models.Model):

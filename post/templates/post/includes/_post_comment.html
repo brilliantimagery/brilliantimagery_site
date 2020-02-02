@@ -21,12 +21,12 @@
     </div>
     <p>{{ comment.comment|safe }}</p>
     {% if comment.author == user or user|has_permission:"can add post" %}
-        <a href="{% url 'post-slugged:update_comment' slug_category=post.category.slug_category date_slug=post.publish_date|date:"Y-m-d" slug_post=post.slug_post %}?post-id={{ post.pk }}&comment-id={{ comment.pk }}#comment-form">Edit</a>
+        <a href="{% url 'post-slugged:update_comment' root_slug=post.category.root_slug date_slug=post.publish_date|date:"Y-m-d" post_slug=post.post_slug %}?post-id={{ post.pk }}&comment-id={{ comment.pk }}#comment-form">Edit</a>
         <br>
     {% endif %}
     {% if post.comments_enabled and post.category.comments_enabled %}
         {% if not form %}
-            <a href="{% url 'post-slugged:comment' slug_category=post.category.slug_category date_slug=post.publish_date|date:"Y-m-d" slug_post=post.slug_post %}?post-id={{ post.pk }}&comment-id={{ comment.pk }}#comment-form" class="btn btn-outline-secondary btn-sm">Comment</a>
+            <a href="{% url 'post-slugged:comment' root_slug=post.category.root_slug date_slug=post.publish_date|date:"Y-m-d" post_slug=post.post_slug %}?post-id={{ post.pk }}&comment-id={{ comment.pk }}#comment-form" class="btn btn-outline-secondary btn-sm">Comment</a>
             <a href="{% url 'account:login' %}">Login</a>
             |
             <a href="{% url 'account:register' %}">Register</a>

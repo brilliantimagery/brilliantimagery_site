@@ -18,15 +18,15 @@ pagination_count = 4
 posts_per_sidebar_topic = 5
 
 
-def detail_view(request, slug_category, date_slug, slug_post):
-    post = get_object_or_404(Post, slug_post=slug_post)
+def detail_view(request, root_slug, date_slug, post_slug):
+    post = get_object_or_404(Post, post_slug=post_slug)
 
     context = {'post': post, 'sidebar': _sidebar()}
     return render(request, 'post/post_detail.html', context=context)
 
 
 def home_view(request):
-    posts = Post.objects.order_by('-publish_date').all()
+    posts = Post.objects.order_by('-publish_date').filter(category__is_root_post=False).all()
     paginated_posts = Paginator(posts, pagination_count)
     page = request.GET.get('page')
     posts = paginated_posts.get_page(page)
@@ -46,7 +46,7 @@ def user_post_list_view(request, username):
     return render(request, 'post/post_list.html', context=context)
 
 
-def comment_view(request, slug_category, date_slug, slug_post):
+def comment_view(request, root_slug, date_slug, post_slug):
     post_id = int(request.GET.get('post-id', '0'))
     comment_id = int(request.GET.get('comment-id', '0'))
 
@@ -90,9 +90,9 @@ def comment_view(request, slug_category, date_slug, slug_post):
             post_comment.comment = None
 
             return redirect('post-slugged:detail-view',
-                            slug_category=slug_category,
+                            root_slug=root_slug,
                             date_slug=date_slug,
-                            slug_post=slug_post)
+                            post_slug=post_slug)
         else:
             post_comment.comment = request.POST.get('comment', '')
 
@@ -102,7 +102,7 @@ def comment_view(request, slug_category, date_slug, slug_post):
     post = get_object_or_404(Post,
                              # category__slug_category=slug_category,
                              # publish_date=datetime.datetime.strptime(date_slug, "%Y-%m-%d"),
-                             slug_post=slug_post)
+                             post_slug=post_slug)
 
     context = {'post': post,
                'form': form,
@@ -116,7 +116,7 @@ def comment_view(request, slug_category, date_slug, slug_post):
 # @permission_required
 # @user_passes_test()
 @login_required
-def update_comment_view(request, slug_category, date_slug, slug_post):
+def update_comment_view(request, root_slug, date_slug, post_slug):
     post_id = int(request.GET.get('post-id', '0'))
     comment_id = int(request.GET.get('comment-id', '0'))
     user = request.user
@@ -139,15 +139,15 @@ def update_comment_view(request, slug_category, date_slug, slug_post):
             comment.save()
 
             return redirect('post-slugged:detail-view',
-                            slug_category=slug_category,
+                            root_slug=root_slug,
                             date_slug=date_slug,
-                            slug_post=slug_post)
+                            post_slug=post_slug)
         else:
             comment.comment = request.POST.get('comment', '')
 
         form = NewCommentForm(instance=comment)
 
-    post = get_object_or_404(Post, slug_post=slug_post)
+    post = get_object_or_404(Post, post_slug=post_slug)
 
     context = {'post': post,
                'form': form,
@@ -156,22 +156,27 @@ def update_comment_view(request, slug_category, date_slug, slug_post):
     return render(request, 'post/post_detail.html', context=context)
 
 
-def category_view(request, slug_category):
-    posts = Post.objects.filter(category__slug_category=slug_category). \
-        order_by('-publish_date').all()
+def root_view(request, root_slug):
+    post = Post.objects.filter(post_slug=root_slug, category__is_root_post=True).first()
+    if post:
+        context = {'post': post, 'sidebar': _sidebar()}
+        return render(request, 'post/post_detail.html', context=context)
+    else:
+        posts = Post.objects.filter(category__root_slug=root_slug). \
+            order_by('-publish_date').all()
 
-    paginated_posts = Paginator(posts, pagination_count)
-    page = request.GET.get('page')
-    posts = paginated_posts.get_page(page)
+        paginated_posts = Paginator(posts, pagination_count)
+        page = request.GET.get('page')
+        posts = paginated_posts.get_page(page)
 
-    return render(request, 'post/post_list.html',
-                  {'object_list': posts,
-                   'sidebar': _sidebar(category__name__iexact=slug_category)})
+        return render(request, 'post/post_list.html',
+                      {'object_list': posts,
+                       'sidebar': _sidebar(category__name__iexact=root_slug)})
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['title', 'content', 'category', 'slug_post']
+    fields = ['title', 'content', 'category', 'post_slug']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -181,8 +186,8 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     success_url = '/'
-    slug_field = 'slug_post'
-    slug_url_kwarg = 'slug_post'
+    slug_field = 'post_slug'
+    slug_url_kwarg = 'post_slug'
 
     def test_func(self):
         post = self.get_object()
@@ -214,10 +219,10 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'content', 'category', 'slug_post']
+    fields = ['title', 'content', 'category', 'post_slug']
 
-    slug_field = 'slug_post'
-    slug_url_kwarg = 'slug_post'
+    slug_field = 'post_slug'
+    slug_url_kwarg = 'post_slug'
     redirect_field_name = 'post:detail-view'
 
     def form_valid(self, form):
@@ -235,10 +240,10 @@ def _sidebar(**kwargs):
     filters = kwargs.copy()
     filters.pop('category__name', None)
     filters.pop('category__name__iexact', None)
-    all_posts = Post.objects.filter(**filters).order_by('-publish_date')[:posts_per_sidebar_topic]
+    all_posts = Post.objects.filter(**filters, category__is_root_post=False).order_by('-publish_date')[:posts_per_sidebar_topic]
     sidebar = {'All Posts': all_posts}
 
-    categories = PostCategory.objects.values_list('name', flat=True)
+    categories = PostCategory.objects.filter(is_root_post=False).values_list('name', flat=True)
 
     for cat in categories:
         posts = Post.objects.filter(**kwargs).order_by('-publish_date'). \
